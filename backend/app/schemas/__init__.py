@@ -7,6 +7,7 @@ from .answer_option import AnswerOptionCreate, AnswerOptionRead, AnswerOptionUpd
 from .question import QuestionCreate, QuestionRead, QuestionUpdate, QuestionBase
 from .student_response import StudentResponseCreate, StudentResponseRead, StudentResponseBase
 from .item_analysis_result import ItemAnalysisResultRead, ItemAnalysisResultBase
+from .statistics import OptionStatData, QuestionOptionStatsRead
 
 # Anda bisa menambahkan __all__ jika ingin mengontrol apa yang diimpor dengan 'from app.schemas import *'
 # __all__ = [

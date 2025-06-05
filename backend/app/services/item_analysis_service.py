@@ -181,3 +181,60 @@ class ItemAnalysisService:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Could not save analysis result.")
 
         return schemas.ItemAnalysisResultRead.model_validate(analysis_result_orm)
+    
+    def get_question_option_statistics(
+        self, db: Session, question_id: UUID
+    ) -> schemas.QuestionOptionStatsRead: # Menggunakan skema yang baru dibuat
+        """
+        Menghitung dan mengembalikan statistik pemilihan untuk setiap opsi jawaban dari sebuah soal.
+        Hanya relevan untuk soal pilihan ganda.
+        """
+        question = crud.question.get(db, id=question_id) # crud.question.get sudah eager load options
+        if not question:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Question with id {question_id} not found.")
+        
+        if question.question_type != "multiple_choice":
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Option statistics are only available for multiple-choice questions.")
+
+        student_responses = db.query(StudentResponse).filter(StudentResponse.question_id == question_id).all()
+        total_responses_for_question = len(student_responses)
+
+        options_stats_data: List[schemas.OptionStatData] = []
+
+        if not question.answer_options:
+            return schemas.QuestionOptionStatsRead(
+                question_id=question_id,
+                question_content=question.content,
+                question_type=question.question_type,
+                total_responses_for_question=total_responses_for_question,
+                options_stats=[]
+            )
+
+        for option in question.answer_options:
+            selection_count = 0
+            for response in student_responses:
+                if response.selected_option_id == option.id:
+                    selection_count += 1
+            
+            selection_percentage = (
+                round((selection_count / total_responses_for_question) * 100, 2)
+                if total_responses_for_question > 0 else 0.0
+            )
+            
+            options_stats_data.append(
+                schemas.OptionStatData(
+                    option_id=option.id,
+                    option_text=option.option_text,
+                    is_correct=option.is_correct, # Menambahkan info kunci jawaban
+                    selection_count=selection_count,
+                    selection_percentage=selection_percentage
+                )
+            )
+            
+        return schemas.QuestionOptionStatsRead(
+            question_id=question_id,
+            question_content=question.content,
+            question_type=question.question_type,
+            total_responses_for_question=total_responses_for_question,
+            options_stats=options_stats_data
+        )

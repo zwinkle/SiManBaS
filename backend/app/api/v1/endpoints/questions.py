@@ -8,6 +8,7 @@ from app import schemas, crud # <--- IMPORT crud
 from app.db.session import get_db
 from app.core.security import get_current_active_user
 from app.models.user import User # Untuk dependensi current_user
+from app.services.item_analysis_service import ItemAnalysisService
 
 router = APIRouter()
 
@@ -91,3 +92,31 @@ async def delete_question(
     
     crud.question.remove(db=db, id=question_id)
     # Tidak ada return body untuk status 204
+
+@router.get(
+    "/{question_id}/option-stats",
+    response_model=schemas.QuestionOptionStatsRead, # Menggunakan skema dari schemas.statistics
+    summary="Get Option Selection Statistics for a Multiple-Choice Question" # Deskripsi untuk Swagger UI
+)
+async def read_question_option_stats(
+    question_id: UUID,
+    db: Session = Depends(get_db),
+    # Kita bisa membuat instance service atau menginjectnya jika service lebih kompleks
+    # Untuk konsistensi dengan endpoint analysis, mari kita inject ItemAnalysisService
+    item_analysis_service: ItemAnalysisService = Depends(ItemAnalysisService),
+    # current_user: User = Depends(get_current_active_user) # Tambahkan jika perlu otorisasi
+) -> Any:
+    """
+    Mengambil statistik pemilihan untuk setiap opsi jawaban dari sebuah soal pilihan ganda.
+    Ini menunjukkan berapa banyak dan persentase siswa yang memilih setiap opsi.
+    """
+    try:
+        # Panggil metode service yang baru dibuat
+        stats = item_analysis_service.get_question_option_statistics(db=db, question_id=question_id)
+        return stats
+    except HTTPException as e:
+        raise e # Biarkan HTTPException dari service muncul
+    except Exception as e:
+        # Anda mungkin ingin menambahkan logging di sini untuk error tak terduga
+        # logger.error(f"Error calculating option stats for question {question_id}: {e}", exc_info=True)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An internal error occurred while retrieving option statistics.")
