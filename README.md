@@ -35,6 +35,99 @@ Pastikan perangkat lunak berikut sudah terinstal di sistem Anda:
 * Git
 * (Opsional, jika ingin menjalankan dengan Docker di kemudian hari) Docker & Docker Compose
 
+## Struktur Folder
+```
+[NAMA_FOLDER_REPOSITORY]/
+├── backend/
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── main.py                   # FastAPI app instance, main router
+│   │   ├── core/
+│   │   │   ├── __init__.py
+│   │   │   ├── config.py             # Settings (Pydantic BaseSettings)
+│   │   │   └── security.py           # Password hashing, JWT logic
+│   │   ├── db/
+│   │   │   ├── __init__.py
+│   │   │   ├── session.py            # Database engine, SessionLocal
+│   │   │   ├── base.py               # DeclarativeBase for SQLAlchemy models
+│   │   │   └── init_db.py            # (Opsional) Script inisialisasi data awal
+│   │   ├── models/                   # SQLAlchemy models
+│   │   │   ├── __init__.py
+│   │   │   ├── user.py
+│   │   │   ├── question.py
+│   │   │   ├── answer_option.py
+│   │   │   ├── student_response.py
+│   │   │   └── item_analysis_result.py
+│   │   ├── schemas/                  # Pydantic schemas (untuk validasi & serialisasi)
+│   │   │   ├── __init__.py
+│   │   │   ├── user.py
+│   │   │   ├── question.py
+│   │   │   ├── answer_option.py
+│   │   │   ├── student_response.py
+│   │   │   ├── item_analysis_result.py
+│   │   │   └── token.py
+│   │   ├── api/
+│   │   │   ├── __init__.py
+│   │   │   └── v1/
+│   │   │       ├── __init__.py
+│   │   │       ├── api.py              # Main API router v1 (aggregates endpoint routers)
+│   │   │       └── endpoints/
+│   │   │           ├── __init__.py
+│   │   │           ├── auth.py
+│   │   │           ├── users.py
+│   │   │           ├── questions.py
+│   │   │           ├── responses.py
+│   │   │           └── analysis.py
+│   │   ├── crud/                     # CRUD operations (interaksi database)
+│   │   │   ├── __init__.py
+│   │   │   ├── base.py               # Base CRUD class (opsional)
+│   │   │   ├── crud_user.py
+│   │   │   ├── crud_question.py
+│   │   │   ├── crud_answer_option.py
+│   │   │   ├── crud_student_response.py
+│   │   │   └── crud_item_analysis_result.py
+│   │   └── services/                 # Logika bisnis yang lebih kompleks
+│   │       ├── __init__.py
+│   │       └── item_analysis_service.py
+│   ├── tests/                      # Folder untuk unit dan integration tests
+│   │   └── ...
+│   ├── alembic/                    # Folder untuk migrasi Alembic
+│   │   └── ...
+│   ├── alembic.ini                 # Konfigurasi Alembic
+│   ├── .env
+│   ├── .env.example
+│   ├── requirements.txt
+│   └── Dockerfile                  # (Akan dibuat nanti)
+│
+├── frontend/
+│   ├── public/
+│   │   ├── index.html
+│   │   └── ... (favicon, manifest, etc.)
+│   ├── src/
+│   │   ├── App.js
+│   │   ├── index.js
+│   │   ├── assets/                 # Gambar, font, style global
+│   │   ├── components/             # Komponen UI reusable (Button, Card, Form, Table, Chart)
+│   │   ├── contexts/               # React Context (misal, AuthContext)
+│   │   ├── hooks/                  # Custom React Hooks
+│   │   ├── layouts/                # Komponen layout utama (MainLayout, AuthLayout)
+│   │   ├── pages/                  # Komponen untuk setiap halaman/route
+│   │   ├── routes/                 # Konfigurasi routing (misal, AppRouter.js)
+│   │   ├── services/               # Fungsi untuk memanggil API backend (authService.js, questionService.js)
+│   │   └── utils/                  # Fungsi utilitas
+│   ├── .env
+│   ├── .env.example
+│   ├── package.json
+│   ├── yarn.lock (atau package-lock.json)
+│   ├── jsconfig.json (atau tsconfig.json jika TypeScript)
+│   └── Dockerfile                  # (Akan dibuat nanti)
+│
+├── .gitignore
+├── README.md
+└── docker-compose.yml            # (Akan dibuat nanti)
+
+```
+
 ## Instalasi & Setup (Pengembangan Lokal)
 
 1.  **Clone Repository:**
