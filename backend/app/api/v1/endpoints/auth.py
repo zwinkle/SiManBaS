@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from datetime import timedelta
 
-from app import schemas, crud # <--- IMPORT crud
+from app import schemas, crud
 from app.db.session import get_db
 from app.core.security import create_access_token, verify_password # get_password_hash tidak dipakai di login, tapi di register
 from app.core.config import settings

@@ -43,6 +43,17 @@ class UserRead(UserBase):
     # Konfigurasi Pydantic untuk mode ORM (memuat data dari objek SQLAlchemy)
     model_config = ConfigDict(from_attributes=True)
 
+class UserUpdateByAdmin(BaseModel):
+    """
+    Skema untuk admin memperbarui data pengguna.
+    Semua field bersifat opsional.
+    """
+    email: Optional[EmailStr] = None
+    full_name: Optional[str] = None
+    role: Optional[str] = None
+    is_active: Optional[bool] = None
+    password: Optional[str] = None
+
 # Anda bisa juga membuat UserInDBBase atau UserInDB jika perlu skema yang
 # merepresentasikan data lengkap di DB termasuk hashed_password, tapi biasanya
 # UserRead sudah cukup untuk output API.

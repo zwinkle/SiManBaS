@@ -64,3 +64,34 @@ async def get_question_analysis(
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Question with id {question_id} not found.")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Analysis result not found for this question/session. Trigger analysis first via POST.")
     return schemas.ItemAnalysisResultRead.model_validate(analysis_result)
+
+@router.get(
+    "/summary-stats",
+    response_model=List[schemas.ItemAnalysisResultRead],
+    summary="Get Summary Statistics for Multiple Question Analyses"
+)
+async def read_analysis_summary_stats(
+    db: Session = Depends(get_db),
+    subject: Optional[str] = None,
+    topic: Optional[str] = None,
+    question_type: Optional[str] = None,
+    min_responses: Optional[int] = 0, # Jumlah minimal respons yang dianalisis
+    skip: int = 0,
+    limit: int = 1000,
+    item_analysis_service: ItemAnalysisService = Depends(ItemAnalysisService),
+    # current_user: User = Depends(get_current_active_user) # Aktifkan jika perlu otorisasi
+) -> Any:
+    """
+    Mengambil ringkasan hasil analisis (P-value, D-index, jumlah respons)
+    untuk sekelompok soal. Berguna untuk melihat distribusi atau tren.
+    """
+    summary_stats = item_analysis_service.get_analysis_results_summary(
+        db=db,
+        subject=subject,
+        topic=topic,
+        question_type=question_type,
+        min_responses_analyzed=min_responses,
+        skip=skip,
+        limit=limit
+    )
+    return summary_stats

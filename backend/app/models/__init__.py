@@ -6,6 +6,7 @@
 from .user import User
 from .question import Question
 from .answer_option import AnswerOption
+from .comment import Comment
 from .student_response import StudentResponse
 from .item_analysis_result import ItemAnalysisResult
 

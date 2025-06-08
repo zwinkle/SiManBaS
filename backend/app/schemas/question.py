@@ -53,3 +53,11 @@ class QuestionRead(QuestionBase):
     creator: Optional[UserRead] = None
 
     model_config = ConfigDict(from_attributes=True)
+
+class QuestionPage(BaseModel):
+    """
+    Skema untuk respons paginasi.
+    Berisi daftar soal (items) dan jumlah total soal (total).
+    """
+    items: List[QuestionRead]
+    total: int

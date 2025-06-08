@@ -20,6 +20,7 @@ class User(Base):
 
     # Relasi: User bisa membuat banyak Question
     questions_created = relationship("Question", back_populates="creator", cascade="all, delete-orphan")
+    comments = relationship("Comment", back_populates="owner", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<User(id={self.id}, username='{self.username}', email='{self.email}')>"

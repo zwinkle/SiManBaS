@@ -1,5 +1,5 @@
 # backend/app/crud/crud_user.py
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional, Union, List
 from uuid import UUID
 
 from sqlalchemy.orm import Session
@@ -7,7 +7,7 @@ from fastapi.encoders import jsonable_encoder
 
 from app.crud.base import CRUDBase
 from app.models.user import User
-from app.schemas.user import UserCreate, UserUpdate
+from app.schemas.user import UserCreate, UserUpdate, UserUpdateByAdmin
 from app.core.security import get_password_hash # Untuk hashing password
 
 class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
@@ -36,13 +36,19 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         db.commit()
         db.refresh(db_obj)
         return db_obj
+    
+    def get_multi(
+        self, db: Session, *, skip: int = 0, limit: int = 100
+    ) -> List[User]:
+        """Mengambil beberapa pengguna dengan paginasi."""
+        return db.query(self.model).order_by(self.model.full_name).offset(skip).limit(limit).all()
 
     def update(
         self,
         db: Session,
         *,
         db_obj: User,
-        obj_in: Union[UserUpdate, Dict[str, Any]]
+        obj_in: Union[UserUpdate, UserUpdateByAdmin, Dict[str, Any]]
     ) -> User:
         """
         Memperbarui pengguna.

@@ -1,0 +1,32 @@
+/* src/index.css (Versi Bersih dan Benar) */
+
+/*
+  Langkah 1: Pastikan elemen dasar mengisi seluruh tinggi layar.
+  Ini memberikan fondasi yang solid untuk layout seperti AuthLayout.
+*/
+html,
+body,
+#root {
+  height: 100%;
+}
+
+/*
+  Langkah 2: Terapkan reset sederhana dan style dasar untuk body.
+  PENTING: Kita TIDAK menggunakan 'display: flex' di sini.
+*/
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+  background-color: #f0f2f5; /* Warna latar belakang umum AntD */
+  color: #213547;
+}

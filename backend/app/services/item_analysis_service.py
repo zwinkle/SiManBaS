@@ -9,6 +9,7 @@ from app import schemas, crud
 from app.models.student_response import StudentResponse
 from app.models.question import Question
 from app.models.answer_option import AnswerOption
+from app.models.item_analysis_result import ItemAnalysisResult
 from app.core.config import settings # Jika ada setting terkait analisis
 
 class ItemAnalysisService:
@@ -238,3 +239,38 @@ class ItemAnalysisService:
             total_responses_for_question=total_responses_for_question,
             options_stats=options_stats_data
         )
+    
+    def get_analysis_results_summary(
+        self,
+        db: Session,
+        subject: Optional[str] = None,
+        topic: Optional[str] = None,
+        question_type: Optional[str] = None,
+        min_responses_analyzed: Optional[int] = 0, # Filter hasil analisis dengan minimal jumlah respons
+        skip: int = 0,
+        limit: int = 1000 # Default limit yang lebih besar untuk ringkasan
+    ) -> List[schemas.ItemAnalysisResultRead]: # Mengembalikan list dari skema Read
+        """
+        Mengambil daftar hasil analisis item (P-value, D-index, jumlah respons)
+        untuk sekelompok soal, dengan opsi filter.
+        """
+        query = db.query(ItemAnalysisResult)
+
+        # Join dengan tabel Question untuk filter berdasarkan atribut soal
+        # Ini diperlukan jika filter subject, topic, atau question_type ada
+        if subject or topic or question_type:
+            query = query.join(Question, ItemAnalysisResult.question_id == Question.id)
+            if subject:
+                query = query.filter(Question.subject.ilike(f"%{subject}%"))
+            if topic:
+                query = query.filter(Question.topic.ilike(f"%{topic}%"))
+            if question_type:
+                query = query.filter(Question.question_type == question_type)
+        
+        if min_responses_analyzed is not None and min_responses_analyzed > 0:
+            query = query.filter(ItemAnalysisResult.responses_analyzed_count >= min_responses_analyzed)
+
+        results_orm = query.order_by(ItemAnalysisResult.last_analyzed_at.desc()).offset(skip).limit(limit).all()
+        
+        # Konversi ORM objects ke Pydantic schemas
+        return [schemas.ItemAnalysisResultRead.model_validate(res) for res in results_orm]

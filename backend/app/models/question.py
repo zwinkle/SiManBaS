@@ -31,5 +31,7 @@ class Question(Base):
     # Relasi dengan ItemAnalysisResult
     analysis_results = relationship("ItemAnalysisResult", back_populates="question", cascade="all, delete-orphan")
 
+    comments = relationship("Comment", back_populates="question", cascade="all, delete-orphan")
+
     def __repr__(self):
         return f"<Question(id={self.id}, type='{self.question_type}', subject='{self.subject}')>"
