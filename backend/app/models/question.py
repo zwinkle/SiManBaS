@@ -5,6 +5,8 @@ from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import relationship
 from app.db.base import Base
 
+from .test_session import test_session_questions
+
 class Question(Base):
     __tablename__ = "questions"
 
@@ -32,6 +34,8 @@ class Question(Base):
     analysis_results = relationship("ItemAnalysisResult", back_populates="question", cascade="all, delete-orphan")
 
     comments = relationship("Comment", back_populates="question", cascade="all, delete-orphan")
+
+    test_sessions = relationship("TestSession", secondary=test_session_questions, back_populates="questions")
 
     def __repr__(self):
         return f"<Question(id={self.id}, type='{self.question_type}', subject='{self.subject}')>"

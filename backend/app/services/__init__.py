@@ -6,3 +6,4 @@
 from .item_analysis_service import ItemAnalysisService
 from .statistics_service import StatisticsService
 from .bulk_upload_service import BulkUploadService
+from .template_service import TemplateService

@@ -9,7 +9,8 @@ from .question import QuestionCreate, QuestionRead, QuestionUpdate, QuestionBase
 from .student_response import StudentResponseCreate, StudentResponseRead, StudentResponseBase
 from .item_analysis_result import ItemAnalysisResultRead, ItemAnalysisResultBase
 from .statistics import OptionStatData, QuestionOptionStatsRead, AdminDashboardStats, TeacherDashboardStats, ItemAnalysisResultReadForStats, StudentScoresInput
-from .bulk_upload import BulkUploadResponse
+from .test_session import TestSessionBase, TestSessionCreate, TestSessionRead, TestSessionUpdate, QuestionIDList
+from .bulk_upload import BulkUploadResponse, UploadErrorDetail
 
 # Anda bisa menambahkan __all__ jika ingin mengontrol apa yang diimpor dengan 'from app.schemas import *'
 # __all__ = [

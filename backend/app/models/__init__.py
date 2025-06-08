@@ -8,6 +8,7 @@ from .question import Question
 from .answer_option import AnswerOption
 from .comment import Comment
 from .student_response import StudentResponse
+from .test_session import TestSession
 from .item_analysis_result import ItemAnalysisResult
 
 # Anda bisa mendefinisikan __all__ jika ingin mengontrol apa yang diimpor dengan 'from app.models import *'
