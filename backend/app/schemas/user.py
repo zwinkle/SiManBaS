@@ -22,38 +22,28 @@ class UserCreate(UserBase):
 
 class UserUpdate(BaseModel):
     """
-    Skema untuk memperbarui data pengguna. Semua field bersifat opsional.
+    Skema untuk pengguna memperbarui data mereka sendiri.
+    Username tidak bisa diubah.
     """
     email: Optional[EmailStr] = None
-    username: Optional[str] = None
     full_name: Optional[str] = None
-    role: Optional[str] = None
-    is_active: Optional[bool] = None
     password: Optional[str] = None # Jika ingin mengizinkan pembaruan password
 
 class UserRead(UserBase):
     """
     Skema untuk membaca data pengguna (misalnya, sebagai response API).
-    Tidak menyertakan password.
     """
     id: UUID
     created_at: datetime
     updated_at: datetime
-
-    # Konfigurasi Pydantic untuk mode ORM (memuat data dari objek SQLAlchemy)
     model_config = ConfigDict(from_attributes=True)
 
 class UserUpdateByAdmin(BaseModel):
     """
     Skema untuk admin memperbarui data pengguna.
-    Semua field bersifat opsional.
     """
     email: Optional[EmailStr] = None
     full_name: Optional[str] = None
     role: Optional[str] = None
     is_active: Optional[bool] = None
     password: Optional[str] = None
-
-# Anda bisa juga membuat UserInDBBase atau UserInDB jika perlu skema yang
-# merepresentasikan data lengkap di DB termasuk hashed_password, tapi biasanya
-# UserRead sudah cukup untuk output API.

@@ -1,6 +1,6 @@
 # backend/app/schemas/statistics.py
 from pydantic import BaseModel, ConfigDict
-from typing import List, Optional
+from typing import List, Optional, Dict
 from uuid import UUID
 from .user import UserRead  # Untuk menampilkan detail pembuat soal
 from .question import QuestionRead # Untuk menampilkan detail soal
@@ -51,8 +51,6 @@ class TeacherDashboardStats(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-
-# Skema khusus untuk worst_questions agar tidak terlalu berat
 class ItemAnalysisResultReadForStats(BaseModel):
     """
     Skema sederhana untuk menampilkan hasil analisis di dashboard.
@@ -63,3 +61,11 @@ class ItemAnalysisResultReadForStats(BaseModel):
     question: QuestionRead # Tampilkan detail soal terkait
 
     model_config = ConfigDict(from_attributes=True)
+
+class StudentScoresInput(BaseModel):
+    """
+    Skema untuk menerima input skor total siswa.
+    Formatnya adalah sebuah dictionary, di mana key adalah student_identifier
+    dan value adalah skor total mereka.
+    """
+    scores: Dict[str, float]

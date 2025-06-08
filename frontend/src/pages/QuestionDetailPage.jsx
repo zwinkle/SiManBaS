@@ -6,6 +6,7 @@ import PageTitle from '../components/common/PageTitle';
 import CommentList from '../components/comments/CommentList';
 import CommentForm from '../components/comments/CommentForm';
 import ResponseListTable from '../components/responses/ResponseListTable';
+import AnalysisTriggerModal from '../components/analysis/AnalysisTriggerModal';
 import questionService from '../api/questionService';
 import analysisService from '../api/analysisService';
 import { getApiErrorMessage } from '../utils/errors';
@@ -26,6 +27,7 @@ const QuestionDetailPage = () => {
     const [analysisLoading, setAnalysisLoading] = useState(false);
     const [studentResponses, setStudentResponses] = useState([]);
     const [commentLoading, setCommentLoading] = useState(false);
+    const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
 
     const fetchAllData = useCallback(async () => {
         try {
@@ -49,6 +51,25 @@ const QuestionDetailPage = () => {
     useEffect(() => {
         fetchAllData();
     }, [fetchAllData]);
+
+    const handleReanalyze = () => {
+        setIsAnalysisModalOpen(true);
+    };
+
+    const runAnalysisWithScores = async (scores) => {
+        const scoresPayload = scores ? { scores } : null; // Buat payload sesuai format backend
+        setAnalysisLoading(true);
+        try {
+            const newAnalysisData = await analysisService.triggerAnalysis(questionId, scoresPayload);
+            setAnalysis(newAnalysisData);
+            message.success("Analisis berhasil dijalankan!");
+            setIsAnalysisModalOpen(false);
+        } catch (error) {
+             message.error(getApiErrorMessage(error));
+        } finally {
+            setAnalysisLoading(false);
+        }
+    };
 
     const fetchStudentResponses = useCallback(async () => {
         setResponsesLoading(true);
@@ -104,21 +125,6 @@ const QuestionDetailPage = () => {
         }
     };
 
-    const handleReanalyze = async () => {
-        // TODO: Buat modal untuk input data skor total siswa jika diperlukan untuk D-Index
-        const studentScoresPayload = null; // Ganti dengan data skor jika ada
-        setAnalysisLoading(true);
-        try {
-            const newAnalysisData = await analysisService.triggerAnalysis(questionId, studentScoresPayload);
-            setAnalysis(newAnalysisData);
-            message.success("Analisis ulang berhasil!");
-        } catch (error) {
-             message.error(getApiErrorMessage(error));
-        } finally {
-            setAnalysisLoading(false);
-        }
-    }
-
     if (loading) {
         return <Spin tip="Memuat detail soal..." size="large" style={{ display: 'block', marginTop: '50px' }} />;
     }
@@ -133,7 +139,9 @@ const QuestionDetailPage = () => {
             label: 'Hasil Analisis',
             children: (
                 <Spin spinning={analysisLoading}>
-                    <Button onClick={handleReanalyze} style={{marginBottom: 16}}>Analisis Ulang</Button>
+                    <Button onClick={handleReanalyze} style={{marginBottom: 16}}>
+                        Analisis Ulang dengan Skor
+                    </Button>
                     <Row gutter={[16, 16]}>
                         <Col xs={24} md={8}>
                             <StatCard title="P-Value (Tingkat Kesulitan)" value={analysis?.difficulty_index_p_value ?? 'N/A'} precision={3} icon={<CheckCircleOutlined />} />
@@ -193,6 +201,13 @@ const QuestionDetailPage = () => {
                     <p>Silakan login untuk memberikan komentar.</p>
                 )}
             </Card>
+
+            <AnalysisTriggerModal
+                open={isAnalysisModalOpen}
+                onCancel={() => setIsAnalysisModalOpen(false)}
+                onRunAnalysis={runAnalysisWithScores}
+                loading={analysisLoading}
+            />
         </div>
     );
 };

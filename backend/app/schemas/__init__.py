@@ -8,7 +8,7 @@ from .comment import CommentBase, CommentCreate, CommentRead, CommentUpdate
 from .question import QuestionCreate, QuestionRead, QuestionUpdate, QuestionBase, QuestionPage
 from .student_response import StudentResponseCreate, StudentResponseRead, StudentResponseBase
 from .item_analysis_result import ItemAnalysisResultRead, ItemAnalysisResultBase
-from .statistics import OptionStatData, QuestionOptionStatsRead, AdminDashboardStats, TeacherDashboardStats, ItemAnalysisResultReadForStats
+from .statistics import OptionStatData, QuestionOptionStatsRead, AdminDashboardStats, TeacherDashboardStats, ItemAnalysisResultReadForStats, StudentScoresInput
 from .bulk_upload import BulkUploadResponse
 
 # Anda bisa menambahkan __all__ jika ingin mengontrol apa yang diimpor dengan 'from app.schemas import *'

@@ -1,23 +1,20 @@
 // src/pages/ProfilePage.jsx
 import React, { useState, useEffect } from 'react';
-import { Card, Form, Input, Button, message, Avatar, Spin, Typography } from 'antd';
+import { Card, Form, Input, Button, Avatar, Spin, Typography, App } from 'antd';
 import { UserOutlined, MailOutlined, IdcardOutlined, LockOutlined } from '@ant-design/icons';
 import useAuth from '../hooks/useAuth';
 import PageTitle from '../components/common/PageTitle';
 import { getApiErrorMessage } from '../utils/errors';
 import authService from '../api/authService';
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 
 const ProfilePage = () => {
-    // Dapatkan 'user', status loading awal, dan fungsi 'refreshUser' dari context
     const { user, loading: authLoading, refreshUser } = useAuth();
-    // State untuk loading saat form disubmit
     const [submitting, setSubmitting] = useState(false);
     const [form] = Form.useForm();
+    const { message: messageApi } = App.useApp();
 
-    // Gunakan useEffect untuk mengisi ulang form jika data user dari context berubah.
-    // Ini memastikan form menampilkan data terbaru setelah pembaruan.
     useEffect(() => {
         if (user) {
             form.setFieldsValue({
@@ -28,34 +25,37 @@ const ProfilePage = () => {
         }
     }, [user, form]);
 
-    /**
-     * Fungsi yang dijalankan saat form disubmit.
-     * @param {object} values - Nilai-nilai dari form.
-     */
     const onFinish = async (values) => {
         setSubmitting(true);
         try {
-            // Buat payload bersih: jangan kirim field password jika kosong
-            const payload = { ...values };
-            if (!payload.password || payload.password.trim() === '') {
-                delete payload.password;
+            // --- PERBAIKAN DI SINI ---
+            // 1. Buat objek payload yang bersih secara eksplisit.
+            // Ini untuk memastikan hanya field yang diizinkan oleh API yang dikirim.
+            const payload = {
+                full_name: values.full_name,
+                email: values.email,
+            };
+
+            // 2. Hanya tambahkan field 'password' ke payload jika pengguna benar-benar mengisinya.
+            if (values.password && values.password.trim() !== '') {
+                payload.password = values.password;
             }
-            
-            // Panggil fungsi API untuk update user me
+            // `username` dan field lain dari form tidak akan disertakan.
+            // --- AKHIR PERBAIKAN ---
+
+            // 4. Kirim payload yang bersih ke API.
             await authService.updateMyProfile(payload);
             
-            // Muat ulang data user di seluruh aplikasi untuk merefleksikan perubahan
             await refreshUser();
             
-            message.success('Profil berhasil diperbarui!');
+            messageApi.success('Profil berhasil diperbarui!');
         } catch (error) {
-            message.error(getApiErrorMessage(error));
+            messageApi.error(getApiErrorMessage(error));
         } finally {
             setSubmitting(false);
         }
     };
 
-    // Tampilkan loader besar jika data profil awal masih dimuat
     if (authLoading) {
         return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
@@ -70,14 +70,14 @@ const ProfilePage = () => {
             <Card>
                 <div style={{ textAlign: 'center', marginBottom: 24 }}>
                     <Avatar size={128} icon={<UserOutlined />} />
-                    <Title level={4} style={{ marginTop: 16, marginBottom: 4 }}>{user?.full_name}</Title>
+                    <Typography.Title level={4} style={{ marginTop: 16, marginBottom: 4 }}>{user?.full_name}</Typography.Title>
                     <Text type="secondary">@{user?.username}</Text>
                 </div>
                 <Form
                     form={form}
                     layout="vertical"
                     onFinish={onFinish}
-                    initialValues={user} // Mengisi form dengan data user saat ini
+                    initialValues={user}
                     style={{ maxWidth: '600px', margin: '0 auto' }}
                 >
                     <Form.Item name="full_name" label="Nama Lengkap" rules={[{ required: true, message: 'Nama lengkap tidak boleh kosong' }]}>

@@ -22,17 +22,21 @@ async def trigger_and_get_question_analysis(
     question_id: UUID,
     db: Session = Depends(get_db),
     test_session_identifier: Optional[str] = None, # Bisa dari query param
-    student_scores_input: Optional[StudentScoresInput] = None, # Data skor dari body, opsional
+    # Gunakan Body(...) untuk menerima JSON body, termasuk yang opsional
+    student_scores_input: Optional[schemas.StudentScoresInput] = Body(None),
     item_analysis_service: ItemAnalysisService = Depends(ItemAnalysisService),
-    # current_user: User = Depends(get_current_active_user) # Aktifkan jika perlu
+    current_user: User = Depends(get_current_active_user)
 ) -> Any:
     """
-    Memicu perhitungan analisis untuk soal tertentu dan menyimpan/memperbarui hasilnya.
-    Secara opsional menerima skor total siswa untuk perhitungan Indeks Diskriminasi.
+    Memicu perhitungan analisis untuk soal tertentu.
+    Secara opsional menerima skor total siswa di dalam body untuk
+    perhitungan Indeks Diskriminasi yang lengkap.
     """
+    # Ekstrak dictionary skor jika ada, jika tidak, biarkan None
     all_student_scores = student_scores_input.scores if student_scores_input else None
-
+    
     try:
+        # Panggil service dengan data skor yang mungkin ada
         analysis_result = item_analysis_service.get_or_create_analysis_for_question(
             db=db,
             question_id=question_id,
@@ -43,8 +47,8 @@ async def trigger_and_get_question_analysis(
     except HTTPException as e:
         raise e
     except Exception as e:
-        # logger.error(f"Unexpected error during analysis: {e}", exc_info=True) # Contoh logging
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"An unexpected error occurred during analysis.")
+        # Tambahkan logging di sini jika perlu
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occurred during analysis.")
 
 # Endpoint GET tetap sama, hanya mengambil data yang sudah ada
 @router.get("/questions/{question_id}", response_model=schemas.ItemAnalysisResultRead)
