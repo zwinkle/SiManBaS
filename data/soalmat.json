@@ -1,0 +1,370 @@
+[
+    {
+      "subject": "Matematika",
+      "topic": "Aljabar Dasar",
+      "question_type": "short_answer",
+      "content": "Berapakah nilai dari 8 * (2 + 3)?"
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Aljabar Dasar",
+      "question_type": "multiple_choice",
+      "content": "Jika x + 5 = 12, berapakah nilai x?",
+      "answer_options": [
+        { "option_text": "5", "is_correct": false },
+        { "option_text": "6", "is_correct": false },
+        { "option_text": "7", "is_correct": true },
+        { "option_text": "8", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Geometri",
+      "question_type": "essay",
+      "content": "Jelaskan perbedaan antara persegi dan persegi panjang."
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Geometri",
+      "question_type": "multiple_choice",
+      "content": "Berapa jumlah sudut dalam sebuah segitiga?",
+      "answer_options": [
+        { "option_text": "90 derajat", "is_correct": false },
+        { "option_text": "180 derajat", "is_correct": true },
+        { "option_text": "270 derajat", "is_correct": false },
+        { "option_text": "360 derajat", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Pecahan",
+      "question_type": "short_answer",
+      "content": "Berapakah hasil dari 1/2 + 1/4?"
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Pecahan",
+      "question_type": "multiple_choice",
+      "content": "Manakah pecahan yang nilainya paling besar?",
+      "answer_options": [
+        { "option_text": "3/4", "is_correct": true },
+        { "option_text": "1/2", "is_correct": false },
+        { "option_text": "2/5", "is_correct": false },
+        { "option_text": "5/8", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Statistika",
+      "question_type": "short_answer",
+      "content": "Berapa rata-rata dari angka 5, 10, dan 15?"
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Statistika",
+      "question_type": "essay",
+      "content": "Apa yang dimaksud dengan median dalam statistika?"
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Aljabar Lanjut",
+      "question_type": "multiple_choice",
+      "content": "Apa bentuk sederhana dari (x^2 - 4) / (x - 2)?",
+      "answer_options": [
+        { "option_text": "x - 2", "is_correct": false },
+        { "option_text": "x", "is_correct": false },
+        { "option_text": "x + 2", "is_correct": true }
+      ]
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Geometri",
+      "question_type": "short_answer",
+      "content": "Jika keliling sebuah persegi adalah 20 cm, berapa luasnya?"
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Trigonometri",
+      "question_type": "short_answer",
+      "content": "Berapakah nilai dari sin(90)?"
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Trigonometri",
+      "question_type": "multiple_choice",
+      "content": "Dalam segitiga siku-siku, sisi di seberang sudut 90 derajat disebut...",
+      "answer_options": [
+        { "option_text": "Sisi miring (hipotenusa)", "is_correct": true },
+        { "option_text": "Sisi tegak", "is_correct": false },
+        { "option_text": "Sisi alas", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Peluang",
+      "question_type": "short_answer",
+      "content": "Berapa peluang munculnya angka genap saat melempar satu dadu?"
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Peluang",
+      "question_type": "essay",
+      "content": "Jelaskan perbedaan antara permutasi dan kombinasi."
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Logika",
+      "question_type": "multiple_choice",
+      "content": "Jika semua A adalah B, dan semua B adalah C, maka...",
+      "answer_options": [
+        { "option_text": "Semua C adalah A", "is_correct": false },
+        { "option_text": "Semua A adalah C", "is_correct": true },
+        { "option_text": "Tidak ada A yang C", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Bilangan",
+      "question_type": "short_answer",
+      "content": "Apa bilangan prima setelah 13?"
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Aljabar Lanjut",
+      "question_type": "multiple_choice",
+      "content": "Akar-akar dari persamaan kuadrat x^2 - 5x + 6 = 0 adalah...",
+      "answer_options": [
+          { "option_text": "2 dan 3", "is_correct": true },
+          { "option_text": "-2 dan -3", "is_correct": false },
+          { "option_text": "1 dan 6", "is_correct": false },
+          { "option_text": "-1 dan -6", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Aljabar Lanjut",
+      "question_type": "short_answer",
+      "content": "Jika f(x) = 2x + 1 dan g(x) = x - 3, berapakah nilai dari (f o g)(5)?"
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Logaritma",
+      "question_type": "essay",
+      "content": "Jelaskan sifat-sifat dasar logaritma."
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Barisan dan Deret",
+      "question_type": "multiple_choice",
+      "content": "Suku ke-10 dari barisan aritmetika 3, 7, 11, 15, ... adalah...",
+      "answer_options": [
+          { "option_text": "35", "is_correct": false },
+          { "option_text": "39", "is_correct": true },
+          { "option_text": "43", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Barisan dan Deret",
+      "question_type": "short_answer",
+      "content": "Berapakah jumlah 5 suku pertama dari deret geometri 2, 6, 18, ...?"
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Kalkulus",
+      "question_type": "short_answer",
+      "content": "Tentukan turunan pertama dari fungsi f(x) = 3x^4 + 2x^2 - 5."
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Kalkulus",
+      "question_type": "multiple_choice",
+      "content": "Nilai dari limit x mendekati 2 untuk fungsi (x^2 - 4) / (x - 2) adalah...",
+      "answer_options": [
+          { "option_text": "0", "is_correct": false },
+          { "option_text": "2", "is_correct": false },
+          { "option_text": "4", "is_correct": true },
+          { "option_text": "Tak terhingga", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Kalkulus",
+      "question_type": "essay",
+      "content": "Jelaskan konsep dasar Teorema Fundamental Kalkulus."
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Kalkulus",
+      "question_type": "short_answer",
+      "content": "Tentukan hasil dari integral tak tentu ∫(6x^2) dx."
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Kalkulus",
+      "question_type": "multiple_choice",
+      "content": "Garis singgung pada kurva y = x^2 di titik x = 3 memiliki gradien...",
+      "answer_options": [
+          { "option_text": "3", "is_correct": false },
+          { "option_text": "6", "is_correct": true },
+          { "option_text": "9", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Kalkulus",
+      "question_type": "short_answer",
+      "content": "Tentukan nilai integral tentu dari ∫(2x) dx dari x=1 sampai x=3."
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Kalkulus",
+      "question_type": "essay",
+      "content": "Apa aplikasi turunan dalam menentukan nilai maksimum dan minimum suatu fungsi?"
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Kalkulus",
+      "question_type": "multiple_choice",
+      "content": "Turunan dari fungsi f(x) = sin(x) adalah...",
+      "answer_options": [
+          { "option_text": "cos(x)", "is_correct": true },
+          { "option_text": "-sin(x)", "is_correct": false },
+          { "option_text": "-cos(x)", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Geometri Analitik",
+      "question_type": "short_answer",
+      "content": "Berapa jarak antara titik A(1, 2) dan B(4, 6)?"
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Geometri Analitik",
+      "question_type": "multiple_choice",
+      "content": "Manakah persamaan lingkaran dengan pusat (0,0) dan jari-jari 5?",
+      "answer_options": [
+          { "option_text": "x^2 + y^2 = 5", "is_correct": false },
+          { "option_text": "x + y = 25", "is_correct": false },
+          { "option_text": "x^2 + y^2 = 25", "is_correct": true }
+      ]
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Geometri Analitik",
+      "question_type": "essay",
+      "content": "Jelaskan apa yang dimaksud dengan gradien dan bagaimana cara menghitungnya dari dua titik."
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Geometri Analitik",
+      "question_type": "short_answer",
+      "content": "Tentukan persamaan garis yang melalui titik (2,3) dengan gradien 4."
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Geometri Analitik",
+      "question_type": "multiple_choice",
+      "content": "Titik potong grafik y = 2x + 6 dengan sumbu Y adalah...",
+      "answer_options": [
+          { "option_text": "(3, 0)", "is_correct": false },
+          { "option_text": "(0, 6)", "is_correct": true },
+          { "option_text": "(-3, 0)", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Matriks",
+      "question_type": "essay",
+      "content": "Apa itu matriks identitas dan apa perannya dalam perkalian matriks?"
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Matriks",
+      "question_type": "short_answer",
+      "content": "Tentukan determinan dari matriks 2x2: [[4, 2], [3, 5]]."
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Matriks",
+      "question_type": "multiple_choice",
+      "content": "Ordo dari matriks [[1, 2, 3], [4, 5, 6]] adalah...",
+      "answer_options": [
+          { "option_text": "3x2", "is_correct": false },
+          { "option_text": "2x3", "is_correct": true },
+          { "option_text": "6", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Matriks",
+      "question_type": "short_answer",
+      "content": "Apa hasil dari perkalian matriks [[1, 2]] dengan [[3], [4]]?"
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Matriks",
+      "question_type": "essay",
+      "content": "Jelaskan kapan dua matriks dapat dikalikan."
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Statistika Lanjut",
+      "question_type": "short_answer",
+      "content": "Dari data 2, 2, 4, 5, 7, berapakah modusnya?"
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Statistika Lanjut",
+      "question_type": "multiple_choice",
+      "content": "Simbol 'Σ' (sigma) dalam statistika berarti...",
+      "answer_options": [
+          { "option_text": "Perkalian", "is_correct": false },
+          { "option_text": "Pembagian", "is_correct": false },
+          { "option_text": "Penjumlahan", "is_correct": true }
+      ]
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Statistika Lanjut",
+      "question_type": "essay",
+      "content": "Jelaskan perbedaan antara populasi dan sampel dalam penelitian statistika."
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Statistika Lanjut",
+      "question_type": "short_answer",
+      "content": "Tentukan jangkauan (range) dari data: 12, 15, 9, 21, 11."
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Teori Bilangan",
+      "question_type": "multiple_choice",
+      "content": "Manakah dari berikut ini yang bukan merupakan bilangan irasional?",
+      "answer_options": [
+          { "option_text": "√2", "is_correct": false },
+          { "option_text": "π (pi)", "is_correct": false },
+          { "option_text": "√9", "is_correct": true }
+      ]
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Teori Bilangan",
+      "question_type": "short_answer",
+      "content": "Tentukan Faktor Persekutuan Terbesar (FPB) dari 18 dan 24."
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Teori Bilangan",
+      "question_type": "essay",
+      "content": "Buktikan bahwa akar kuadrat dari 2 adalah bilangan irasional."
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Teori Bilangan",
+      "question_type": "short_answer",
+      "content": "Konversikan bilangan biner 1101 ke dalam bentuk desimal."
+    }
+  ]
+  

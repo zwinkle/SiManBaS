@@ -1,0 +1,389 @@
+[
+    {
+      "subject": "Matematika",
+      "topic": "Aljabar Dasar",
+      "question_type": "short_answer",
+      "content": "Berapakah nilai dari 8 * (2 + 3)?"
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Aljabar Dasar",
+      "question_type": "multiple_choice",
+      "content": "Jika x + 5 = 12, berapakah nilai x?",
+      "answer_options": [
+        { "option_text": "5", "is_correct": false },
+        { "option_text": "6", "is_correct": false },
+        { "option_text": "7", "is_correct": true },
+        { "option_text": "8", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Geometri",
+      "question_type": "essay",
+      "content": "Jelaskan perbedaan antara persegi dan persegi panjang."
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Geometri",
+      "question_type": "multiple_choice",
+      "content": "Berapa jumlah sudut dalam sebuah segitiga?",
+      "answer_options": [
+        { "option_text": "90 derajat", "is_correct": false },
+        { "option_text": "180 derajat", "is_correct": true },
+        { "option_text": "270 derajat", "is_correct": false },
+        { "option_text": "360 derajat", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Pecahan",
+      "question_type": "short_answer",
+      "content": "Berapakah hasil dari 1/2 + 1/4?"
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Pecahan",
+      "question_type": "multiple_choice",
+      "content": "Manakah pecahan yang nilainya paling besar?",
+      "answer_options": [
+        { "option_text": "3/4", "is_correct": true },
+        { "option_text": "1/2", "is_correct": false },
+        { "option_text": "2/5", "is_correct": false },
+        { "option_text": "5/8", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Statistika",
+      "question_type": "short_answer",
+      "content": "Berapa rata-rata dari angka 5, 10, dan 15?"
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Statistika",
+      "question_type": "essay",
+      "content": "Apa yang dimaksud dengan median dalam statistika?"
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Aljabar Lanjut",
+      "question_type": "multiple_choice",
+      "content": "Apa bentuk sederhana dari (x^2 - 4) / (x - 2)?",
+      "answer_options": [
+        { "option_text": "x - 2", "is_correct": false },
+        { "option_text": "x", "is_correct": false },
+        { "option_text": "x + 2", "is_correct": true }
+      ]
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Geometri",
+      "question_type": "short_answer",
+      "content": "Jika keliling sebuah persegi adalah 20 cm, berapa luasnya?"
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Trigonometri",
+      "question_type": "short_answer",
+      "content": "Berapakah nilai dari sin(90)?"
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Trigonometri",
+      "question_type": "multiple_choice",
+      "content": "Dalam segitiga siku-siku, sisi di seberang sudut 90 derajat disebut...",
+      "answer_options": [
+        { "option_text": "Sisi miring (hipotenusa)", "is_correct": true },
+        { "option_text": "Sisi tegak", "is_correct": false },
+        { "option_text": "Sisi alas", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Peluang",
+      "question_type": "short_answer",
+      "content": "Berapa peluang munculnya angka genap saat melempar satu dadu?"
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Peluang",
+      "question_type": "essay",
+      "content": "Jelaskan perbedaan antara permutasi dan kombinasi."
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Logika",
+      "question_type": "multiple_choice",
+      "content": "Jika semua A adalah B, dan semua B adalah C, maka...",
+      "answer_options": [
+        { "option_text": "Semua C adalah A", "is_correct": false },
+        { "option_text": "Semua A adalah C", "is_correct": true },
+        { "option_text": "Tidak ada A yang C", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Matematika",
+      "topic": "Bilangan",
+      "question_type": "short_answer",
+      "content": "Apa bilangan prima setelah 13?"
+    },
+    {
+      "subject": "Sains",
+      "topic": "Biologi",
+      "question_type": "multiple_choice",
+      "content": "Proses pembuatan makanan pada tumbuhan disebut...",
+      "answer_options": [
+        { "option_text": "Respirasi", "is_correct": false },
+        { "option_text": "Fotosintesis", "is_correct": true },
+        { "option_text": "Transpirasi", "is_correct": false },
+        { "option_text": "Evolusi", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Sains",
+      "topic": "Biologi",
+      "question_type": "essay",
+      "content": "Jelaskan fungsi utama dari mitokondria di dalam sel."
+    },
+    {
+      "subject": "Sains",
+      "topic": "Fisika",
+      "question_type": "short_answer",
+      "content": "Apa satuan SI untuk gaya?"
+    },
+    {
+      "subject": "Sains",
+      "topic": "Fisika",
+      "question_type": "multiple_choice",
+      "content": "Hukum gerak Newton yang menyatakan F = ma adalah hukum ke...",
+      "answer_options": [
+        { "option_text": "Satu", "is_correct": false },
+        { "option_text": "Dua", "is_correct": true },
+        { "option_text": "Tiga", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Sains",
+      "topic": "Kimia",
+      "question_type": "short_answer",
+      "content": "Apa rumus kimia untuk air?"
+    },
+    {
+      "subject": "Sains",
+      "topic": "Kimia",
+      "question_type": "essay",
+      "content": "Jelaskan perbedaan antara ikatan ionik dan ikatan kovalen."
+    },
+    {
+      "subject": "Sains",
+      "topic": "Astronomi",
+      "question_type": "multiple_choice",
+      "content": "Planet manakah yang dikenal sebagai 'Planet Merah'?",
+      "answer_options": [
+        { "option_text": "Venus", "is_correct": false },
+        { "option_text": "Mars", "is_correct": true },
+        { "option_text": "Jupiter", "is_correct": false },
+        { "option_text": "Saturnus", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Sains",
+      "topic": "Astronomi",
+      "question_type": "short_answer",
+      "content": "Apa nama galaksi tempat tata surya kita berada?"
+    },
+    {
+      "subject": "Sains",
+      "topic": "Ekologi",
+      "question_type": "essay",
+      "content": "Apa yang dimaksud dengan rantai makanan? Berikan satu contoh sederhana."
+    },
+    {
+      "subject": "Sains",
+      "topic": "Ekologi",
+      "question_type": "multiple_choice",
+      "content": "Organisme yang dapat membuat makanannya sendiri disebut...",
+      "answer_options": [
+        { "option_text": "Konsumen", "is_correct": false },
+        { "option_text": "Dekomposer", "is_correct": false },
+        { "option_text": "Produsen", "is_correct": true }
+      ]
+    },
+    {
+      "subject": "Sains",
+      "topic": "Genetika",
+      "question_type": "short_answer",
+      "content": "Apa kepanjangan dari DNA?"
+    },
+    {
+      "subject": "Sains",
+      "topic": "Genetika",
+      "question_type": "essay",
+      "content": "Jelaskan secara singkat bagaimana pewarisan sifat terjadi menurut hukum Mendel."
+    },
+    {
+      "subject": "Sains",
+      "topic": "Geologi",
+      "question_type": "multiple_choice",
+      "content": "Lapisan terluar dari Bumi disebut...",
+      "answer_options": [
+        { "option_text": "Mantel", "is_correct": false },
+        { "option_text": "Inti", "is_correct": false },
+        { "option_text": "Kerak Bumi", "is_correct": true }
+      ]
+    },
+    {
+      "subject": "Sains",
+      "topic": "Geologi",
+      "question_type": "short_answer",
+      "content": "Apa nama proses pemecahan batuan oleh cuaca?"
+    },
+    {
+      "subject": "Sains",
+      "topic": "Anatomi",
+      "question_type": "short_answer",
+      "content": "Apa tulang terbesar di tubuh manusia?"
+    },
+    {
+      "subject": "Sains",
+      "topic": "Anatomi",
+      "question_type": "multiple_choice",
+      "content": "Organ mana yang berfungsi memompa darah ke seluruh tubuh?",
+      "answer_options": [
+        { "option_text": "Paru-paru", "is_correct": false },
+        { "option_text": "Jantung", "is_correct": true },
+        { "option_text": "Hati", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Sejarah Indonesia",
+      "topic": "Kemerdekaan",
+      "question_type": "short_answer",
+      "content": "Pada tanggal berapa Proklamasi Kemerdekaan Indonesia dibacakan?"
+    },
+    {
+      "subject": "Sejarah Indonesia",
+      "topic": "Kemerdekaan",
+      "question_type": "multiple_choice",
+      "content": "Siapakah yang mengetik naskah Proklamasi Kemerdekaan Indonesia?",
+      "answer_options": [
+        { "option_text": "Mohammad Hatta", "is_correct": false },
+        { "option_text": "Sayuti Melik", "is_correct": true },
+        { "option_text": "Soekarno", "is_correct": false },
+        { "option_text": "Ahmad Soebardjo", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Sejarah Indonesia",
+      "topic": "Kerajaan",
+      "question_type": "essay",
+      "content": "Jelaskan secara singkat mengenai kejayaan Kerajaan Majapahit di bawah pimpinan Hayam Wuruk dan Gajah Mada."
+    },
+    {
+      "subject": "Sejarah Indonesia",
+      "topic": "Kerajaan",
+      "question_type": "multiple_choice",
+      "content": "Candi Borobudur merupakan peninggalan dari kerajaan...",
+      "answer_options": [
+        { "option_text": "Mataram Kuno (Dinasti Syailendra)", "is_correct": true },
+        { "option_text": "Sriwijaya", "is_correct": false },
+        { "option_text": "Majapahit", "is_correct": false },
+        { "option_text": "Singasari", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Sejarah Indonesia",
+      "topic": "Perjuangan Nasional",
+      "question_type": "short_answer",
+      "content": "Siapakah pahlawan yang dikenal dengan julukan 'Bapak Pendidikan Nasional'?"
+    },
+    {
+      "subject": "Sejarah Indonesia",
+      "topic": "Perjuangan Nasional",
+      "question_type": "multiple_choice",
+      "content": "Perang Diponegoro terjadi pada tahun...",
+      "answer_options": [
+        { "option_text": "1800-1805", "is_correct": false },
+        { "option_text": "1825-1830", "is_correct": true },
+        { "option_text": "1850-1855", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Sejarah Indonesia",
+      "topic": "Orde Lama",
+      "question_type": "essay",
+      "content": "Apa yang dimaksud dengan Demokrasi Terpimpin yang diterapkan pada masa Orde Lama?"
+    },
+    {
+      "subject": "Sejarah Indonesia",
+      "topic": "Orde Baru",
+      "question_type": "short_answer",
+      "content": "Siapakah presiden Indonesia pada masa Orde Baru?"
+    },
+    {
+      "subject": "Sejarah Indonesia",
+      "topic": "Orde Baru",
+      "question_type": "multiple_choice",
+      "content": "Peristiwa apa yang menandai berakhirnya masa Orde Baru pada tahun 1998?",
+      "answer_options": [
+        { "option_text": "Gerakan 30 September", "is_correct": false },
+        { "option_text": "Supersemar", "is_correct": false },
+        { "option_text": "Gerakan Reformasi", "is_correct": true }
+      ]
+    },
+    {
+      "subject": "Sejarah Indonesia",
+      "topic": "Sumpah Pemuda",
+      "question_type": "short_answer",
+      "content": "Kapan Kongres Pemuda II yang menghasilkan Sumpah Pemuda dilaksanakan?"
+    },
+    {
+      "subject": "Sejarah Indonesia",
+      "topic": "Sumpah Pemuda",
+      "question_type": "essay",
+      "content": "Sebutkan dan jelaskan tiga isi dari Sumpah Pemuda."
+    },
+    {
+      "subject": "Sejarah Indonesia",
+      "topic": "Zaman Pra-aksara",
+      "question_type": "multiple_choice",
+      "content": "Manusia purba jenis 'Pithecanthropus erectus' ditemukan oleh Eugene Dubois di...",
+      "answer_options": [
+        { "option_text": "Sangiran, Jawa Tengah", "is_correct": false },
+        { "option_text": "Trinil, Jawa Timur", "is_correct": true },
+        { "option_text": "Wajak, Jawa Timur", "is_correct": false }
+      ]
+    },
+    {
+      "subject": "Sejarah Indonesia",
+      "topic": "Kolonialisme",
+      "question_type": "short_answer",
+      "content": "Negara Eropa manakah yang pertama kali tiba di kepulauan Nusantara untuk berdagang rempah-rempah?"
+    },
+    {
+      "subject": "Sejarah Indonesia",
+      "topic": "Kolonialisme",
+      "question_type": "essay",
+      "content": "Jelaskan apa itu sistem Tanam Paksa (Cultuurstelsel) yang diterapkan oleh pemerintah kolonial Belanda."
+    },
+    {
+      "subject": "Sejarah Indonesia",
+      "topic": "Reformasi",
+      "question_type": "short_answer",
+      "content": "Siapakah presiden pertama Indonesia pada era Reformasi?"
+    },
+    {
+      "subject": "Sejarah Indonesia",
+      "topic": "Konferensi Asia-Afrika",
+      "question_type": "multiple_choice",
+      "content": "Konferensi Asia-Afrika pertama kali diselenggarakan di kota...",
+      "answer_options": [
+        { "option_text": "Jakarta", "is_correct": false },
+        { "option_text": "Bandung", "is_correct": true },
+        { "option_text": "Bogor", "is_correct": false },
+        { "option_text": "Surabaya", "is_correct": false }
+      ]
+    }
+  ]
+  
