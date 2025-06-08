@@ -1,119 +1,88 @@
-// src/pages/QuestionListPage.jsx
-import React, { useState, useEffect, useCallback } from 'react';
-import { Button, message, Space, App } from 'antd'; // Impor App untuk notifikasi
-import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
-import PageTitle from '../components/common/PageTitle';
-import QuestionList from '../components/questions/QuestionList';
-import BulkUploadModal from '../components/questions/BulkUploadModal';
-import questionService from '../api/questionService';
-import { getApiErrorMessage } from '../utils/errors';
+// src/components/questions/QuestionList.jsx
+import React from 'react';
+import { Table, Button, Space, Tag, Popconfirm, Tooltip } from 'antd';
+import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
-const QuestionListPage = () => {
-    const [questions, setQuestions] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-    const navigate = useNavigate();
-    const { message: messageApi } = App.useApp(); // Gunakan hook AntD untuk notifikasi
+/**
+ * Komponen untuk menampilkan daftar soal dalam tabel dengan paginasi.
+ * @param {object} props
+ * @param {Array} props.questions - Array soal untuk ditampilkan.
+ * @param {boolean} props.loading - Status loading.
+ * @param {object} props.pagination - Objek konfigurasi paginasi dari AntD.
+ * @param {function} props.onTableChange - Handler saat paginasi atau sort berubah.
+ * @param {function} props.onView - Handler untuk tombol lihat.
+ * @param {function} props.onEdit - Handler untuk tombol edit.
+ * @param {function} props.onDelete - Handler untuk tombol hapus.
+ */
+const QuestionList = ({ questions, loading, pagination, onTableChange, onView, onEdit, onDelete }) => {
 
-    const [pagination, setPagination] = useState({
-        current: 1,
-        pageSize: 10,
-        total: 0,
-    });
+  const getTagColor = (type) => {
+    switch (type) {
+      case 'multiple_choice': return 'blue';
+      case 'essay': return 'green';
+      case 'short_answer': return 'purple';
+      default: return 'default';
+    }
+  };
 
-    // Fungsi untuk mengambil data, kini hanya menerima parameter yang dibutuhkan
-    const fetchQuestions = useCallback(async (page, pageSize) => {
-        setLoading(true);
-        try {
-            const queryParams = {
-                skip: (page - 1) * pageSize,
-                limit: pageSize,
-            };
-            const response = await questionService.getQuestions(queryParams);
-            setQuestions(response.items);
-            // Update total item dari respons API
-            setPagination(prev => ({ ...prev, total: response.total }));
-        } catch (error) {
-            messageApi.error(getApiErrorMessage(error));
-        } finally {
-            setLoading(false);
-        }
-    }, [messageApi]); // Tambahkan messageApi sebagai dependensi
+  const columns = [
+    {
+      title: 'Isi Pertanyaan',
+      dataIndex: 'content',
+      key: 'content',
+      render: (text) => (
+        <Tooltip title={text}>
+          {text.length > 100 ? `${text.substring(0, 100)}...` : text}
+        </Tooltip>
+      ),
+    },
+    {
+      title: 'Tipe',
+      dataIndex: 'question_type',
+      key: 'question_type',
+      render: (type) => <Tag color={getTagColor(type)}>{type.replace('_', ' ').toUpperCase()}</Tag>,
+    },
+    {
+      title: 'Mata Pelajaran',
+      dataIndex: 'subject',
+      key: 'subject',
+    },
+    {
+      title: 'Topik',
+      dataIndex: 'topic',
+      key: 'topic',
+    },
+    {
+      title: 'Aksi',
+      key: 'action',
+      render: (_, record) => (
+        <Space size="middle">
+          <Tooltip title="Lihat Detail"><Button type="text" icon={<EyeOutlined />} onClick={() => onView(record.id)} /></Tooltip>
+          <Tooltip title="Edit"><Button type="text" icon={<EditOutlined />} onClick={() => onEdit(record.id)} /></Tooltip>
+          <Popconfirm
+            title="Hapus Soal"
+            description="Apakah Anda yakin ingin menghapus soal ini?"
+            onConfirm={() => onDelete(record.id)}
+            okText="Ya, Hapus"
+            cancelText="Batal"
+          >
+            <Tooltip title="Hapus"><Button type="text" danger icon={<DeleteOutlined />} /></Tooltip>
+          </Popconfirm>
+        </Space>
+      ),
+    },
+  ];
 
-    // useEffect ini HANYA berjalan satu kali saat komponen pertama kali dimuat
-    useEffect(() => {
-        fetchQuestions(pagination.current, pagination.pageSize);
-    }, [fetchQuestions]); // Dependensi pada fetchQuestions
-
-    // Fungsi ini akan dipanggil oleh komponen Tabel saat pengguna berinteraksi
-    const handleTableChange = (newPagination) => {
-        // Update state pagination dengan halaman dan ukuran halaman yang baru
-        setPagination(prev => ({
-            ...prev,
-            current: newPagination.current,
-            pageSize: newPagination.pageSize,
-        }));
-        // Panggil kembali data dengan parameter paginasi yang baru
-        fetchQuestions(newPagination.current, newPagination.pageSize);
-    };
-
-    const handleUploadSuccess = () => {
-        setIsUploadModalOpen(false);
-        // Kembali ke halaman pertama setelah upload berhasil
-        setPagination(prev => ({ ...prev, current: 1 }));
-        fetchQuestions(1, pagination.pageSize);
-    };
-
-    const handleDelete = async (id) => {
-        try {
-            await questionService.deleteQuestion(id);
-            messageApi.success('Soal berhasil dihapus.');
-            // Muat ulang daftar soal di halaman saat ini
-            fetchQuestions(pagination.current, pagination.pageSize);
-        } catch (error) {
-            messageApi.error(getApiErrorMessage(error));
-        }
-    };
-    
-    return (
-        <div>
-            <Space style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap' }}>
-                <PageTitle title="Bank Soal" level={2} style={{ marginBottom: 0 }} />
-                <Space>
-                    <Button icon={<UploadOutlined />} onClick={() => setIsUploadModalOpen(true)}>
-                        Upload Soal
-                    </Button>
-                    <Button type="primary" icon={<PlusOutlined />} onClick={() => navigate('/questions/create')}>
-                        Tambah Soal Baru
-                    </Button>
-                </Space>
-            </Space>
-            
-            <QuestionList 
-                questions={questions}
-                loading={loading}
-                pagination={{
-                    current: pagination.current,
-                    pageSize: pagination.pageSize,
-                    total: pagination.total,
-                    showSizeChanger: true,
-                    pageSizeOptions: ['10', '20', '50'],
-                    showTotal: (total, range) => `${range[0]}-${range[1]} dari ${total} soal`,
-                }}
-                onTableChange={handleTableChange}
-                onView={(id) => navigate(`/questions/${id}`)}
-                onEdit={(id) => navigate(`/questions/edit/${id}`)}
-                onDelete={handleDelete}
-            />
-
-            <BulkUploadModal
-                open={isUploadModalOpen}
-                onCancel={() => setIsUploadModalOpen(false)}
-                onUploadSuccess={handleUploadSuccess}
-            />
-        </div>
-    );
+  return (
+    <Table
+      columns={columns}
+      dataSource={questions}
+      loading={loading}
+      rowKey="id"
+      pagination={pagination} // <-- Gunakan prop paginasi
+      onChange={onTableChange} // <-- Gunakan prop handler perubahan
+    />
+  );
 };
 
-export default QuestionListPage;
+export default QuestionList;
