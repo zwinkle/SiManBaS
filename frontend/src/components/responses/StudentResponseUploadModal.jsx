@@ -1,21 +1,20 @@
-// src/components/questions/BulkUploadModal.jsx
+// src/components/responses/StudentResponseUploadModal.jsx
 import React, { useState } from 'react';
 import { Modal, Upload, Button, message, List, Typography, Divider, Space, Tag } from 'antd';
-// PERBAIKAN: Hapus FileCsvOutlined dan gunakan FileTextOutlined untuk keduanya
 import { InboxOutlined, FileTextOutlined } from '@ant-design/icons';
 import useAuth from '../../hooks/useAuth';
 
 const { Dragger } = Upload;
 const { Text, Paragraph } = Typography;
 
-const BulkUploadModal = ({ open, onCancel, onUploadSuccess }) => {
+const StudentResponseUploadModal = ({ open, onCancel, onUploadSuccess }) => {
     const { token } = useAuth();
     const [uploadResponse, setUploadResponse] = useState(null);
 
     const draggerProps = {
         name: 'file',
         multiple: false,
-        action: `${import.meta.env.VITE_API_BASE_URL}/questions/bulk-upload`,
+        action: `${import.meta.env.VITE_API_BASE_URL}/responses/bulk`,
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -29,54 +28,40 @@ const BulkUploadModal = ({ open, onCancel, onUploadSuccess }) => {
             } else if (status === 'error') {
                 const errorMessage = response?.detail || `${info.file.name} gagal diunggah.`;
                 message.error(errorMessage);
-                setUploadResponse(response); // Tampilkan juga detail error jika ada dari backend
+                setUploadResponse(response);
             }
         },
         beforeUpload: (file) => {
             setUploadResponse(null); // Reset response saat file baru dipilih
-            const isCsvOrJson = file.type === 'text/csv' || file.type === 'application/json';
-            if (!isCsvOrJson) {
-                message.error('Anda hanya bisa mengunggah file CSV atau JSON!');
-            }
-            return isCsvOrJson || Upload.LIST_IGNORE;
+            return true;
         },
     };
 
     return (
         <Modal
-            title="Upload Soal Secara Massal"
+            title="Upload Jawaban Siswa Secara Massal"
             open={open}
             onCancel={onCancel}
-            footer={[
-                <Button key="back" onClick={onCancel}>
-                    Tutup
-                </Button>,
-            ]}
+            footer={[<Button key="back" onClick={onCancel}>Tutup</Button>]}
             width={800}
         >
             <Paragraph>
-                Unggah file CSV atau JSON untuk menambahkan banyak soal sekaligus. Silakan unduh template di bawah ini untuk memastikan format yang benar.
+                Unggah file CSV atau JSON yang berisi jawaban siswa. Pastikan format file sesuai dengan template. Untuk soal pilihan ganda, `is_response_correct` bisa dikosongkan agar dinilai otomatis.
             </Paragraph>
-            <Space>
-                <a href="/templates/questions_template.csv" download>
-                    {/* PERBAIKAN: Gunakan FileTextOutlined di sini */}
+             <Space>
+                <a href="/templates/responses_template.csv" download>
                     <Button icon={<FileTextOutlined />}>Unduh Template CSV</Button>
                 </a>
-                <a href="/templates/questions_template.json" download>
+                <a href="/templates/responses_template.json" download>
                     <Button icon={<FileTextOutlined />}>Unduh Template JSON</Button>
                 </a>
-            </Space>
+             </Space>
 
             <Divider />
 
             <Dragger {...draggerProps}>
-                <p className="ant-upload-drag-icon">
-                    <InboxOutlined />
-                </p>
+                <p className="ant-upload-drag-icon"><InboxOutlined /></p>
                 <p className="ant-upload-text">Klik atau seret file ke area ini untuk mengunggah</p>
-                <p className="ant-upload-hint">
-                    Hanya mendukung unggahan tunggal. Gunakan file berformat .csv atau .json.
-                </p>
             </Dragger>
 
             {uploadResponse && (
@@ -107,4 +92,4 @@ const BulkUploadModal = ({ open, onCancel, onUploadSuccess }) => {
     );
 };
 
-export default BulkUploadModal;
+export default StudentResponseUploadModal;

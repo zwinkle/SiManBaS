@@ -4,6 +4,8 @@ from typing import Optional
 from uuid import UUID
 from datetime import datetime
 
+from .question import QuestionRead
+
 class StudentResponseBase(BaseModel):
     """
     Atribut dasar untuk respons siswa.
@@ -27,5 +29,6 @@ class StudentResponseRead(StudentResponseBase):
     id: UUID
     submitted_at: datetime
     is_response_correct: Optional[bool] = None
+    question: QuestionRead
 
     model_config = ConfigDict(from_attributes=True)

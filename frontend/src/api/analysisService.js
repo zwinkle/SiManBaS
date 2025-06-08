@@ -50,10 +50,20 @@ export const getAnalysisSummary = async (params) => {
     }
 };
 
+export const getResponsesByStudent = async (studentIdentifier) => {
+    try {
+        const response = await apiClient.get(`/responses/by-student/${studentIdentifier}`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || error;
+    }
+};
+
 const analysisService = {
     submitStudentResponses,
     triggerAnalysis,
     getAnalysisSummary,
+    getResponsesByStudent,
 };
 
 export default analysisService;

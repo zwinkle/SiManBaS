@@ -5,6 +5,7 @@ import { Row, Col, Card, Descriptions, Tag, Spin, message, Tabs, Button, Divider
 import PageTitle from '../components/common/PageTitle';
 import CommentList from '../components/comments/CommentList';
 import CommentForm from '../components/comments/CommentForm';
+import ResponseListTable from '../components/responses/ResponseListTable';
 import questionService from '../api/questionService';
 import analysisService from '../api/analysisService';
 import { getApiErrorMessage } from '../utils/errors';
@@ -23,6 +24,7 @@ const QuestionDetailPage = () => {
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [analysisLoading, setAnalysisLoading] = useState(false);
+    const [studentResponses, setStudentResponses] = useState([]);
     const [commentLoading, setCommentLoading] = useState(false);
 
     const fetchAllData = useCallback(async () => {
@@ -47,6 +49,32 @@ const QuestionDetailPage = () => {
     useEffect(() => {
         fetchAllData();
     }, [fetchAllData]);
+
+    const fetchStudentResponses = useCallback(async () => {
+        setResponsesLoading(true);
+        try {
+            // TODO: Buat fungsi getResponsesForQuestion di analysisService
+            // const data = await analysisService.getResponsesForQuestion(questionId);
+            // setStudentResponses(data);
+
+            // Untuk sekarang, kita buat data dummy agar UI bisa dilihat
+             const dummyResponses = [
+                { id: 'resp1', student_identifier: 'siswa01', test_session_identifier: 'UTSPAGI2025', selected_option_id: 'opt1-id', is_response_correct: false, submitted_at: new Date().toISOString() },
+                { id: 'resp2', student_identifier: 'siswa02', test_session_identifier: 'UTSPAGI2025', selected_option_id: 'opt2-id', is_response_correct: true, submitted_at: new Date().toISOString() },
+             ];
+             setStudentResponses(dummyResponses);
+        } catch (error) {
+            message.error(`Gagal memuat jawaban siswa: ${getApiErrorMessage(error)}`);
+        } finally {
+            setResponsesLoading(false);
+        }
+    }, [questionId]);
+
+    const onTabChange = (key) => {
+        if (key === '3' && studentResponses.length === 0) {
+            fetchStudentResponses();
+        }
+    };
 
     const fetchComments = useCallback(async () => {
         try {
@@ -126,6 +154,16 @@ const QuestionDetailPage = () => {
             children: <OptionStatsChart statsData={optionStats} />,
             disabled: question.question_type !== 'multiple_choice',
         },
+        {
+            key: '3',
+            label: 'Jawaban Siswa',
+            children: (
+                <ResponseListTable 
+                    responses={studentResponses} 
+                    loading={responsesLoading}
+                />
+            ),
+        },
     ];
 
     return (
@@ -143,7 +181,7 @@ const QuestionDetailPage = () => {
             </Card>
             
             <Card>
-                <Tabs defaultActiveKey="1" items={tabItems} />
+                <Tabs defaultActiveKey="1" items={tabItems} onChange={onTabChange} />
             </Card>
 
             <Card title="Diskusi & Umpan Balik" style={{ marginTop: 24 }}>

@@ -1,0 +1,3 @@
+question_id,student_identifier,test_session_identifier,selected_option_id,response_text,is_response_correct
+"UUID_SOAL_1","siswa01","UTS2025","UUID_OPSI_JAWABAN_1","",
+"UUID_SOAL_2","siswa01","UTS2025","","Ini adalah jawaban esai",true

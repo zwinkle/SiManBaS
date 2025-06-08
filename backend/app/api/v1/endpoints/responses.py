@@ -1,38 +1,27 @@
 # backend/app/api/v1/endpoints/responses.py
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, status
 from sqlalchemy.orm import Session
-from typing import List, Any, Optional # Tambahkan Optional
-from uuid import UUID # Tambahkan UUID
+from typing import List, Any, Optional
+from uuid import UUID
 
 from app import schemas, crud
 from app.db.session import get_db
-from app.core.security import get_current_active_user # Jika hanya user terautentikasi yang bisa submit/view
-from app.models.user import User # Untuk dependensi current_user
+from app.core.security import get_current_active_user
+from app.models.user import User
+from app.services.bulk_upload_service import bulk_upload_service
 
 router = APIRouter()
 
-@router.post("/bulk", status_code=status.HTTP_201_CREATED, response_model=dict)
+@router.post("/bulk", status_code=status.HTTP_200_OK, response_model=schemas.BulkUploadResponse)
 async def create_student_responses_bulk(
-    responses_in: List[schemas.StudentResponseCreate],
     db: Session = Depends(get_db),
-    # current_user: User = Depends(get_current_active_user) # Aktifkan jika perlu
+    current_user: User = Depends(get_current_active_user),
+    file: UploadFile = File(...)
 ) -> Any:
     """
-    Mengirimkan batch respons siswa.
+    Mengunggah file CSV atau JSON untuk membuat banyak jawaban siswa sekaligus.
     """
-    if not responses_in:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No responses provided.")
-    
-    question_ids = {res.question_id for res in responses_in}
-    for q_id in question_ids:
-        if not crud.question.get(db, id=q_id): # Verifikasi question exist
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Question with id {q_id} not found.")
-
-    created_responses = crud.student_response.create_bulk(db=db, responses_in=responses_in)
-    
-    return {"message": f"{len(created_responses)} responses processed and created successfully."}
-
-# --- ENDPOINT BARU DIIMPLEMENTASIKAN DI BAWAH INI ---
+    return bulk_upload_service.process_response_upload(db=db, file=file)
 
 @router.get("/by-question/{question_id}", response_model=List[schemas.StudentResponseRead])
 async def read_responses_by_question(
@@ -40,7 +29,7 @@ async def read_responses_by_question(
     db: Session = Depends(get_db),
     skip: int = 0,
     limit: int = 100,
-    # current_user: User = Depends(get_current_active_user) # Aktifkan jika perlu otorisasi
+    current_user: User = Depends(get_current_active_user)
 ) -> Any:
     """
     Mengambil semua respons siswa untuk satu soal tertentu.
@@ -62,7 +51,7 @@ async def read_responses_by_student(
     db: Session = Depends(get_db),
     skip: int = 0,
     limit: int = 100,
-    # current_user: User = Depends(get_current_active_user) # Aktifkan jika perlu otorisasi
+    current_user: User = Depends(get_current_active_user)
 ) -> Any:
     """
     Mengambil semua respons dari satu siswa tertentu.

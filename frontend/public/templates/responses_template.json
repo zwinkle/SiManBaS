@@ -1,0 +1,15 @@
+[
+    {
+      "question_id": "UUID_SOAL_1",
+      "student_identifier": "siswa02",
+      "test_session_identifier": "UTS2025",
+      "selected_option_id": "UUID_OPSI_JAWABAN_2"
+    },
+    {
+      "question_id": "UUID_SOAL_2",
+      "student_identifier": "siswa02",
+      "test_session_identifier": "UTS2025",
+      "response_text": "Jawaban esai lainnya.",
+      "is_response_correct": false
+    }
+  ]

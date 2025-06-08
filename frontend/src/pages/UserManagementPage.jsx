@@ -1,6 +1,8 @@
 // src/pages/UserManagementPage.jsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { Table, Tag, Switch, message, Tooltip } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { Table, Tag, Switch, message, Tooltip, Button } from 'antd';
+import { EyeOutlined } from '@ant-design/icons';
 import PageTitle from '../components/common/PageTitle';
 import { getApiErrorMessage } from '../utils/errors';
 import userService from '../api/userService';
@@ -8,7 +10,8 @@ import userService from '../api/userService';
 const UserManagementPage = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const navigate = useNavigate();
+    
     const fetchUsers = useCallback(async () => {
         setLoading(true);
         try {
@@ -101,6 +104,19 @@ const UserManagementPage = () => {
             ],
             onFilter: (value, record) => record.is_active === value,
         },
+        {
+            title: 'Aksi',
+            key: 'action',
+            render: (_, record) => (
+                <Tooltip title={`Lihat riwayat jawaban untuk ${record.username}`}>
+                    <Button 
+                        type="text" 
+                        icon={<EyeOutlined />}
+                        onClick={() => navigate(`/students/${record.username}`)} // Gunakan username sebagai identifier
+                    />
+                </Tooltip>
+            )
+        }
     ];
 
     return (
