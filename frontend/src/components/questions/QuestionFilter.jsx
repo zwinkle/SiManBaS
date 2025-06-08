@@ -1,19 +1,13 @@
-// src/components/analysis/AnalysisFilter.jsx
+// src/components/questions/QuestionFilter.jsx
 import React, { useState, useEffect } from 'react';
-import { Form, Row, Col, Select, Button, InputNumber, App } from 'antd';
+import { Form, Row, Col, Select, Button, App } from 'antd';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons';
 import metaService from '../../api/metaService';
 import { getApiErrorMessage } from '../../utils/errors';
 
 const { Option } = Select;
 
-/**
- * Komponen untuk menyediakan kontrol filter di halaman Analisis.
- * @param {object} props
- * @param {function} props.onFilterChange - Fungsi yang dipanggil saat filter diterapkan.
- * @param {boolean} props.loading - Status loading dari halaman induk.
- */
-const AnalysisFilter = ({ onFilterChange, loading }) => {
+const QuestionFilter = ({ onFilterChange, loading }) => {
   const [form] = Form.useForm();
   const [subjects, setSubjects] = useState([]);
   const [topics, setTopics] = useState([]);
@@ -21,7 +15,7 @@ const AnalysisFilter = ({ onFilterChange, loading }) => {
   const [isTopicsLoading, setIsTopicsLoading] = useState(false);
   const { message: messageApi } = App.useApp();
 
-  // Memuat daftar mata pelajaran saat komponen dimuat
+  // Efek untuk memuat daftar mata pelajaran saat komponen dimuat
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
@@ -34,7 +28,7 @@ const AnalysisFilter = ({ onFilterChange, loading }) => {
     fetchSubjects();
   }, [messageApi]);
 
-  // Memuat daftar topik saat mata pelajaran dipilih
+  // Efek untuk memuat daftar topik saat mata pelajaran dipilih
   useEffect(() => {
     if (selectedSubject) {
       const fetchTopics = async () => {
@@ -50,13 +44,13 @@ const AnalysisFilter = ({ onFilterChange, loading }) => {
       };
       fetchTopics();
     } else {
-      setTopics([]);
+      setTopics([]); // Kosongkan topik jika tidak ada mata pelajaran yang dipilih
     }
   }, [selectedSubject, messageApi]);
 
   const handleSubjectChange = (value) => {
     setSelectedSubject(value);
-    form.setFieldsValue({ topic: undefined }); // Reset field topik
+    form.setFieldsValue({ topic: undefined }); // Reset field topik saat mata pelajaran berubah
   };
   
   const handleFinish = (values) => {
@@ -75,7 +69,7 @@ const AnalysisFilter = ({ onFilterChange, loading }) => {
   return (
     <Form form={form} layout="vertical" onFinish={handleFinish}>
       <Row gutter={[16, 0]}>
-      <Col xs={24} sm={12} md={5}>
+        <Col xs={24} sm={12} md={8}>
           <Form.Item name="question_type" label="Tipe Soal">
             <Select placeholder="Semua Tipe" allowClear>
               <Option value="multiple_choice">Pilihan Ganda</Option>
@@ -84,36 +78,41 @@ const AnalysisFilter = ({ onFilterChange, loading }) => {
             </Select>
           </Form.Item>
         </Col>
-        <Col xs={24} sm={12} md={5}>
+        <Col xs={24} sm={12} md={8}>
           <Form.Item name="subject" label="Mata Pelajaran">
-            <Select placeholder="Semua" onChange={handleSubjectChange} allowClear>
+            <Select
+              placeholder="Semua Mata Pelajaran"
+              onChange={handleSubjectChange}
+              allowClear
+              loading={subjects.length === 0 && loading}
+            >
               {subjects.map(sub => <Option key={sub} value={sub}>{sub}</Option>)}
             </Select>
           </Form.Item>
         </Col>
-        <Col xs={24} sm={12} md={5}>
+        <Col xs={24} sm={12} md={8}>
           <Form.Item name="topic" label="Topik">
-            <Select placeholder="Pilih Mapel" disabled={!selectedSubject} loading={isTopicsLoading} allowClear>
+            <Select
+              placeholder={!selectedSubject ? "Pilih Mata Pelajaran Dulu" : "Semua Topik"}
+              disabled={!selectedSubject}
+              loading={isTopicsLoading}
+              allowClear
+            >
               {topics.map(top => <Option key={top} value={top}>{top}</Option>)}
             </Select>
           </Form.Item>
         </Col>
-        <Col xs={24} sm={12} md={5}>
-          <Form.Item name="min_responses" label="Minimal Respons">
-            <InputNumber min={0} style={{ width: '100%' }} placeholder="Contoh: 10" />
-          </Form.Item>
-        </Col>
-        <Col xs={24} md={4} style={{ display: 'flex', alignItems: 'flex-end', gap: '8px', paddingBottom: '24px' }}>
-            <Button type="primary" htmlType="submit" loading={loading} icon={<SearchOutlined />} block>
-              Cari
-            </Button>
-            <Button onClick={handleReset} icon={<ClearOutlined />} block>
-              Reset
-            </Button>
+        <Col xs={24} style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '8px' }}>
+          <Button type="primary" htmlType="submit" loading={loading} icon={<SearchOutlined />}>
+            Cari
+          </Button>
+          <Button onClick={handleReset} icon={<ClearOutlined />}>
+            Reset
+          </Button>
         </Col>
       </Row>
     </Form>
   );
 };
 
-export default AnalysisFilter;
+export default QuestionFilter;

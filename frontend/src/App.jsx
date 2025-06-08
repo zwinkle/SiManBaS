@@ -18,6 +18,8 @@ import QuestionEditPage from './pages/QuestionEditPage';
 import QuestionDetailPage from './pages/QuestionDetailPage';
 import UserManagementPage from './pages/UserManagementPage';
 import StudentReportPage from './pages/StudentReportPage';
+import TestSessionListPage from './pages/TestSessionListPage';
+import TestSessionDetailPage from './pages/TestSessionDetailPage';
 import ProfilePage from './pages/ProfilePage';
 import AnalysisPage from './pages/AnalysisPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -62,6 +64,8 @@ function App() {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/users" element={<UserManagementPage />} />
             <Route path="/students/:studentIdentifier" element={<StudentReportPage />} />
+            <Route path="/sessions" element={<TestSessionListPage />} />
+            <Route path="/sessions/:id" element={<TestSessionDetailPage />} />
             <Route path="/analysis/summary" element={<AnalysisPage />} />
             {/* Tambahkan rute privat lainnya di sini */}
           </Route>

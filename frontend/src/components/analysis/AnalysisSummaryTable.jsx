@@ -1,6 +1,6 @@
 // src/components/analysis/AnalysisSummaryTable.jsx
 import React from 'react';
-import { Table, Button, Tooltip, Tag, Alert } from 'antd';
+import { Table, Button, Tooltip, Tag, Alert, Space } from 'antd';
 import { AreaChartOutlined, WarningOutlined } from '@ant-design/icons';
 
 const AnalysisSummaryTable = ({ analysisData, loading, onViewQuestion }) => {

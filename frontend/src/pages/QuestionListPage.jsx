@@ -1,11 +1,12 @@
 // src/pages/QuestionListPage.jsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { Button, message, Space, App } from 'antd'; // Impor App untuk notifikasi
+import { Button, message, Space, App, Card } from 'antd';
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import PageTitle from '../components/common/PageTitle';
 import QuestionList from '../components/questions/QuestionList';
 import BulkUploadModal from '../components/questions/BulkUploadModal';
+import QuestionFilter from '../components/questions/QuestionFilter'
 import questionService from '../api/questionService';
 import { getApiErrorMessage } from '../utils/errors';
 
@@ -14,63 +15,71 @@ const QuestionListPage = () => {
     const [loading, setLoading] = useState(true);
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
     const navigate = useNavigate();
-    const { message: messageApi } = App.useApp(); // Gunakan hook AntD untuk notifikasi
+    const { message: messageApi } = App.useApp();
 
+    const [filters, setFilters] = useState({});
     const [pagination, setPagination] = useState({
         current: 1,
         pageSize: 10,
         total: 0,
+        showSizeChanger: true,
+        showTotal: (total) => `Total ${total} soal`,
+        pageSizeOptions: ['5', '10', '50', '100']
     });
 
-    // Fungsi untuk mengambil data, kini hanya menerima parameter yang dibutuhkan
-    const fetchQuestions = useCallback(async (page, pageSize) => {
+    const fetchQuestions = useCallback(async (currentFilters, currentPage, currentPageSize) => {
         setLoading(true);
         try {
             const queryParams = {
-                skip: (page - 1) * pageSize,
-                limit: pageSize,
+                ...currentFilters,
+                page: currentPage,
+                limit: currentPageSize,
             };
             const response = await questionService.getQuestions(queryParams);
             setQuestions(response.items);
-            // Update total item dari respons API
-            setPagination(prev => ({ ...prev, total: response.total }));
+            setPagination(prev => ({ 
+                ...prev, 
+                total: response.total || 0,
+                current: Math.min(prev.current, Math.ceil((response.total || 0) / prev.pageSize))
+            }));
         } catch (error) {
             messageApi.error(getApiErrorMessage(error));
+            setQuestions([]);
+            setPagination(prev => ({ ...prev, total: 0 }));
         } finally {
             setLoading(false);
         }
-    }, [messageApi]); // Tambahkan messageApi sebagai dependensi
+    }, [messageApi]);
 
     // useEffect ini HANYA berjalan satu kali saat komponen pertama kali dimuat
     useEffect(() => {
-        fetchQuestions(pagination.current, pagination.pageSize);
-    }, [fetchQuestions]); // Dependensi pada fetchQuestions
+        fetchQuestions(filters, pagination.current, pagination.pageSize);
+    }, [filters, pagination.current, pagination.pageSize, fetchQuestions]);
 
-    // Fungsi ini akan dipanggil oleh komponen Tabel saat pengguna berinteraksi
+    const handleFilterChange = (newFilters) => {
+        // Saat filter baru diterapkan, kembali ke halaman pertama
+        setPagination(prev => ({ ...prev, current: 1 }));
+        setFilters(newFilters);
+    };
+
     const handleTableChange = (newPagination) => {
-        // Update state pagination dengan halaman dan ukuran halaman yang baru
         setPagination(prev => ({
             ...prev,
             current: newPagination.current,
             pageSize: newPagination.pageSize,
         }));
-        // Panggil kembali data dengan parameter paginasi yang baru
-        fetchQuestions(newPagination.current, newPagination.pageSize);
     };
 
     const handleUploadSuccess = () => {
         setIsUploadModalOpen(false);
-        // Kembali ke halaman pertama setelah upload berhasil
-        setPagination(prev => ({ ...prev, current: 1 }));
-        fetchQuestions(1, pagination.pageSize);
+        handleFilterChange({});
     };
 
     const handleDelete = async (id) => {
         try {
             await questionService.deleteQuestion(id);
             messageApi.success('Soal berhasil dihapus.');
-            // Muat ulang daftar soal di halaman saat ini
-            fetchQuestions(pagination.current, pagination.pageSize);
+            fetchQuestions(filters, pagination.current, pagination.pageSize);
         } catch (error) {
             messageApi.error(getApiErrorMessage(error));
         }
@@ -90,17 +99,14 @@ const QuestionListPage = () => {
                 </Space>
             </Space>
             
+            <Card style={{ marginBottom: 24 }}>
+                <QuestionFilter onFilterChange={handleFilterChange} loading={loading} />
+            </Card>
+
             <QuestionList 
                 questions={questions}
                 loading={loading}
-                pagination={{
-                    current: pagination.current,
-                    pageSize: pagination.pageSize,
-                    total: pagination.total,
-                    showSizeChanger: true,
-                    pageSizeOptions: ['10', '20', '50'],
-                    showTotal: (total, range) => `${range[0]}-${range[1]} dari ${total} soal`,
-                }}
+                pagination={pagination}
                 onTableChange={handleTableChange}
                 onView={(id) => navigate(`/questions/${id}`)}
                 onEdit={(id) => navigate(`/questions/edit/${id}`)}

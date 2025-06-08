@@ -59,11 +59,21 @@ export const getResponsesByStudent = async (studentIdentifier) => {
     }
 };
 
+export const getResponsesForQuestion = async (questionId) => {
+    try {
+        const response = await apiClient.get(`/responses/by-question/${questionId}`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || error;
+    }
+};
+
 const analysisService = {
     submitStudentResponses,
     triggerAnalysis,
     getAnalysisSummary,
     getResponsesByStudent,
+    getResponsesForQuestion,
 };
 
 export default analysisService;

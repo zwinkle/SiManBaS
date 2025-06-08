@@ -1,7 +1,7 @@
 // src/pages/QuestionDetailPage.jsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
-import { Row, Col, Card, Descriptions, Tag, Spin, message, Tabs, Button, Divider } from 'antd';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Row, Col, Card, Descriptions, Tag, Spin, Tabs, Button, Divider, App, Typography, Space } from 'antd';
 import PageTitle from '../components/common/PageTitle';
 import CommentList from '../components/comments/CommentList';
 import CommentForm from '../components/comments/CommentForm';
@@ -12,60 +12,82 @@ import analysisService from '../api/analysisService';
 import { getApiErrorMessage } from '../utils/errors';
 import OptionStatsChart from '../components/analysis/OptionStatsChart';
 import StatCard from '../components/dashboard/StatCard';
-import { BarChartOutlined, CheckCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { BarChartOutlined, CheckCircleOutlined, InfoCircleOutlined, KeyOutlined } from '@ant-design/icons';
 import useAuth from '../hooks/useAuth';
 import commentService from '../api/commentService';
+
+const { Text } = Typography;
 
 const QuestionDetailPage = () => {
     const { id: questionId } = useParams();
     const { user } = useAuth();
+    const { message: messageApi } = App.useApp();
+    const navigate = useNavigate();
+
+    // State untuk Data
     const [question, setQuestion] = useState(null);
     const [analysis, setAnalysis] = useState(null);
     const [optionStats, setOptionStats] = useState(null);
     const [comments, setComments] = useState([]);
+    const [studentResponses, setStudentResponses] = useState([]);
+
+    // State untuk Kondisi Loading
     const [loading, setLoading] = useState(true);
     const [analysisLoading, setAnalysisLoading] = useState(false);
-    const [studentResponses, setStudentResponses] = useState([]);
     const [commentLoading, setCommentLoading] = useState(false);
+    const [responsesLoading, setResponsesLoading] = useState(false);
+
+    // State untuk Kontrol UI
     const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
 
-    const fetchAllData = useCallback(async () => {
+    // Mengambil data awal (detail soal, komentar, dll.) saat halaman dimuat
+    const fetchInitialData = useCallback(async () => {
+        setLoading(true);
         try {
-            setLoading(true);
-            // Ambil data secara paralel
-            const [questionData, analysisData, statsData] = await Promise.all([
+            const [questionData, commentsData] = await Promise.all([
                 questionService.getQuestionById(questionId),
-                analysisService.triggerAnalysis(questionId), // Selalu coba trigger analisis saat load
-                questionService.getQuestionOptionStats(questionId),
+                commentService.getCommentsForQuestion(questionId),
             ]);
             setQuestion(questionData);
-            setAnalysis(analysisData);
-            setOptionStats(statsData);
+            setComments(commentsData);
+
+            if (questionData.question_type === 'multiple_choice') {
+                const statsData = await questionService.getQuestionOptionStats(questionId);
+                setOptionStats(statsData);
+            }
+
         } catch (error) {
-            message.error(getApiErrorMessage(error));
+            messageApi.error(getApiErrorMessage(error));
         } finally {
             setLoading(false);
         }
-    }, [questionId]);
+    }, [questionId, messageApi]);
 
     useEffect(() => {
-        fetchAllData();
-    }, [fetchAllData]);
+        fetchInitialData();
+    }, [fetchInitialData]);
 
-    const handleReanalyze = () => {
-        setIsAnalysisModalOpen(true);
+    const getCorrectAnswerText = () => {
+        if (!question || question.question_type !== 'multiple_choice') {
+            return <Text type="secondary">Tidak berlaku untuk tipe soal ini.</Text>;
+        }
+        const correctOption = question.answer_options.find(opt => opt.is_correct);
+        if (correctOption) {
+            return <Text strong>{correctOption.option_text}</Text>;
+        }
+        return <Text type="danger">Kunci jawaban belum diatur!</Text>;
     };
 
     const runAnalysisWithScores = async (scores) => {
-        const scoresPayload = scores ? { scores } : null; // Buat payload sesuai format backend
+        const scoresPayload = scores ? { scores } : null;
         setAnalysisLoading(true);
         try {
             const newAnalysisData = await analysisService.triggerAnalysis(questionId, scoresPayload);
             setAnalysis(newAnalysisData);
-            message.success("Analisis berhasil dijalankan!");
+            messageApi.success("Analisis berhasil dijalankan!");
             setIsAnalysisModalOpen(false);
         } catch (error) {
-             message.error(getApiErrorMessage(error));
+             messageApi.error(getApiErrorMessage(error));
         } finally {
             setAnalysisLoading(false);
         }
@@ -74,22 +96,14 @@ const QuestionDetailPage = () => {
     const fetchStudentResponses = useCallback(async () => {
         setResponsesLoading(true);
         try {
-            // TODO: Buat fungsi getResponsesForQuestion di analysisService
-            // const data = await analysisService.getResponsesForQuestion(questionId);
-            // setStudentResponses(data);
-
-            // Untuk sekarang, kita buat data dummy agar UI bisa dilihat
-             const dummyResponses = [
-                { id: 'resp1', student_identifier: 'siswa01', test_session_identifier: 'UTSPAGI2025', selected_option_id: 'opt1-id', is_response_correct: false, submitted_at: new Date().toISOString() },
-                { id: 'resp2', student_identifier: 'siswa02', test_session_identifier: 'UTSPAGI2025', selected_option_id: 'opt2-id', is_response_correct: true, submitted_at: new Date().toISOString() },
-             ];
-             setStudentResponses(dummyResponses);
+            const data = await analysisService.getResponsesForQuestion(questionId);
+            setStudentResponses(data);
         } catch (error) {
-            message.error(`Gagal memuat jawaban siswa: ${getApiErrorMessage(error)}`);
+            messageApi.error(`Gagal memuat jawaban siswa: ${getApiErrorMessage(error)}`);
         } finally {
             setResponsesLoading(false);
         }
-    }, [questionId]);
+    }, [questionId, messageApi]);
 
     const onTabChange = (key) => {
         if (key === '3' && studentResponses.length === 0) {
@@ -97,36 +111,22 @@ const QuestionDetailPage = () => {
         }
     };
 
-    const fetchComments = useCallback(async () => {
-        try {
-            const commentsData = await commentService.getCommentsForQuestion(questionId);
-            setComments(commentsData);
-        } catch (error) {
-            message.error(`Gagal memuat komentar: ${getApiErrorMessage(error)}`);
-        }
-    }, [questionId]);
-
-    useEffect(() => {
-        fetchComments();
-    }, [fetchComments]);
-
     const handleCommentSubmit = async (values) => {
         setCommentLoading(true);
         try {
-            // Panggil service untuk mengirim komentar
             await commentService.postCommentForQuestion(questionId, values);
-            message.success('Komentar berhasil ditambahkan!');
-            // Muat ulang daftar komentar untuk menampilkan yang baru
-            fetchComments();
+            messageApi.success('Komentar berhasil ditambahkan!');
+            const updatedComments = await commentService.getCommentsForQuestion(questionId);
+            setComments(updatedComments);
         } catch (error) {
-            message.error(getApiErrorMessage(error));
+            messageApi.error(getApiErrorMessage(error));
         } finally {
             setCommentLoading(false);
         }
     };
 
     if (loading) {
-        return <Spin tip="Memuat detail soal..." size="large" style={{ display: 'block', marginTop: '50px' }} />;
+        return <Spin tip="Memuat detail soal..." size="large" fullscreen />;
     }
 
     if (!question) {
@@ -139,7 +139,7 @@ const QuestionDetailPage = () => {
             label: 'Hasil Analisis',
             children: (
                 <Spin spinning={analysisLoading}>
-                    <Button onClick={handleReanalyze} style={{marginBottom: 16}}>
+                    <Button onClick={() => setIsAnalysisModalOpen(true)} style={{marginBottom: 16}}>
                         Analisis Ulang dengan Skor
                     </Button>
                     <Row gutter={[16, 16]}>
@@ -178,12 +178,15 @@ const QuestionDetailPage = () => {
         <div>
             <PageTitle title="Detail & Analisis Soal" />
             <Card style={{ marginBottom: 24 }}>
-                <Descriptions title="Informasi Soal" bordered>
-                    <Descriptions.Item label="Isi Pertanyaan" span={3}>{question.content}</Descriptions.Item>
+                <Descriptions title="Informasi Soal" bordered column={1}>
+                    <Descriptions.Item label="Isi Pertanyaan">{question.content}</Descriptions.Item>
                     <Descriptions.Item label="Mata Pelajaran">{question.subject}</Descriptions.Item>
                     <Descriptions.Item label="Topik">{question.topic}</Descriptions.Item>
                     <Descriptions.Item label="Tipe Soal">
                         <Tag color="blue">{question.question_type.replace('_', ' ').toUpperCase()}</Tag>
+                    </Descriptions.Item>
+                    <Descriptions.Item label={<Space><KeyOutlined /> Kunci Jawaban</Space>}>
+                        {getCorrectAnswerText()}
                     </Descriptions.Item>
                 </Descriptions>
             </Card>
@@ -193,7 +196,7 @@ const QuestionDetailPage = () => {
             </Card>
 
             <Card title="Diskusi & Umpan Balik" style={{ marginTop: 24 }}>
-                {comments.length > 0 && <CommentList comments={comments} />}
+                <CommentList comments={comments} />
                 <Divider />
                 {user ? (
                     <CommentForm onSubmit={handleCommentSubmit} loading={commentLoading} />

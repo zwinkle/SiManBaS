@@ -8,6 +8,7 @@ import {
   TeamOutlined,
   UserOutlined,
   LogoutOutlined,
+  SolutionOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu, theme, Space, Avatar, Dropdown } from 'antd';
 import useAuth from '../hooks/useAuth';
@@ -49,19 +50,19 @@ const MainLayout = () => {
 
   // Membuat menu sidebar dinamis berdasarkan peran pengguna
   const menuItems = useMemo(() => {
-    const baseItems = [
-      getItem(<Link to="/">Dashboard</Link>, '/', <PieChartOutlined />),
-      getItem(<Link to="/questions">Bank Soal</Link>, '/questions', <FileTextOutlined />),
-      getItem(<Link to="/analysis/summary">Analisis</Link>, '/analysis/summary', <DesktopOutlined />),
+    const items = [
+        getItem(<Link to="/">Dashboard</Link>, '/', <PieChartOutlined />),
+        getItem(<Link to="/questions">Bank Soal</Link>, '/questions', <FileTextOutlined />),
+        getItem(<Link to="/sessions">Sesi Ujian</Link>, '/sessions', <SolutionOutlined />),
+        getItem(<Link to="/analysis/summary">Analisis</Link>, '/analysis/summary', <DesktopOutlined />),
     ];
 
-    // Tambahkan menu "Manajemen Pengguna" hanya jika peran adalah 'admin'
     if (user?.role === 'admin') {
-      baseItems.push(getItem(<Link to="/users">Manajemen Pengguna</Link>, '/users', <TeamOutlined />));
+        items.push(getItem(<Link to="/users">Manajemen Pengguna</Link>, '/users', <TeamOutlined />));
     }
 
-    return baseItems;
-  }, [user?.role]); // Menu akan dibuat ulang hanya jika peran pengguna berubah
+    return items;
+}, [user?.role]);
 
   return (
     <Layout style={{ minHeight: '100vh' }}>

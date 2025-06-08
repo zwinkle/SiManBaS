@@ -14,7 +14,7 @@ import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
  * @param {function} props.onEdit - Handler untuk tombol edit.
  * @param {function} props.onDelete - Handler untuk tombol hapus.
  */
-const QuestionList = ({ questions, loading, pagination, onTableChange, onView, onEdit, onDelete }) => {
+const QuestionList = ({ questions, loading, pagination, onTableChange, onView, onEdit, onDelete, rowSelection }) => {
 
   const getTagColor = (type) => {
     switch (type) {
@@ -79,8 +79,9 @@ const QuestionList = ({ questions, loading, pagination, onTableChange, onView, o
       dataSource={questions}
       loading={loading}
       rowKey="id"
-      pagination={pagination} // <-- Gunakan prop paginasi
-      onChange={onTableChange} // <-- Gunakan prop handler perubahan
+      pagination={pagination}
+      onChange={onTableChange}
+      rowSelection={rowSelection}
     />
   );
 };
