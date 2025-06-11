@@ -1,7 +1,7 @@
 # backend/app/api/v1/api.py
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import auth, users, questions, responses, analysis, statistics, test_sessions, meta
+from app.api.v1.endpoints import auth, users, questions, responses, analysis, statistics, test_sessions, meta, rosters
 
 api_router_v1 = APIRouter()
 
@@ -14,6 +14,7 @@ api_router_v1.include_router(analysis.router, prefix="/analysis", tags=["Item An
 api_router_v1.include_router(statistics.router, prefix="/statistics", tags=["Statistics"])
 api_router_v1.include_router(test_sessions.router, prefix="/test-sessions", tags=["Test Sessions"])
 api_router_v1.include_router(meta.router, prefix="/meta", tags=["Metadata"])
+api_router_v1.include_router(rosters.router, prefix="/rosters", tags=["Rosters"])
 
 # Anda bisa menambahkan endpoint lain langsung di sini jika perlu,
 # misalnya endpoint untuk health check v1 API.

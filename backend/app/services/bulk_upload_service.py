@@ -11,6 +11,7 @@ from pydantic import ValidationError
 from app import crud, schemas
 from app.models.user import User
 from app.models.question import Question
+from app.models.roster import Roster
 
 class BulkUploadService:
     def process_question_upload(
@@ -46,27 +47,23 @@ class BulkUploadService:
         successfully_created = 0
         errors: List[schemas.UploadErrorDetail] = []
         
-        # Ambil semua konten soal yang sudah ada ke dalam sebuah set untuk pengecekan yang efisien
         existing_questions_content = {q.content for q in db.query(Question.content).all()}
 
         total_processed_count = 0
         for i, row in enumerate(rows, start=1):
             total_processed_count = i
             try:
-                # --- LOGIKA PENCEGAHAN DUPLIKAT ---
                 question_content = row.get('content')
                 if not question_content:
                     raise ValueError("Kolom 'content' tidak boleh kosong.")
                 
                 if question_content in existing_questions_content:
-                    # Jika konten soal sudah ada, lewati dan catat sebagai error/skipped
                     errors.append(schemas.UploadErrorDetail(
                         row_number=i,
                         error_message="Soal sudah ada (konten sama persis). Dilewati.",
                         row_data=row
                     ))
-                    continue # Lanjut ke baris berikutnya
-                # -----------------------------------
+                    continue
 
                 if 'answer_options' in row and isinstance(row['answer_options'], str):
                     if row['answer_options']:
@@ -80,7 +77,6 @@ class BulkUploadService:
                 question_in = schemas.QuestionCreate(**row)
                 crud.question.create_with_owner(db, obj_in=question_in, owner_id=owner.id)
                 
-                # Tambahkan konten yang baru dibuat ke set agar tidak ada duplikat dalam file yang sama
                 existing_questions_content.add(question_content)
                 successfully_created += 1
 
@@ -94,6 +90,16 @@ class BulkUploadService:
             successfully_created=successfully_created,
             errors=errors
         )
+    
+    def process_roster_upload(self, db: Session, *, roster: Roster, file: UploadFile) -> Roster:
+        content = file.file.read().decode('utf-8')
+        reader = csv.DictReader(io.StringIO(content))
+        student_identifiers = {row['student_identifier'].strip() for row in reader if row.get('student_identifier')}
+        
+        if not student_identifiers:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="File CSV tidak berisi data atau header 'student_identifier' tidak ditemukan.")
+            
+        return crud.roster.add_students_to_roster(db=db, roster=roster, student_identifiers=student_identifiers)
     
     def process_response_upload(self, db: Session, *, file: UploadFile) -> schemas.BulkUploadResponse:
         """
@@ -116,9 +122,7 @@ class BulkUploadService:
             )
         return self._process_response_rows(db, rows=rows)
 
-    def _process_response_rows(
-        self, db: Session, *, rows: List[Dict[str, Any]]
-    ) -> schemas.BulkUploadResponse:
+    def _process_response_rows(self, db: Session, *, rows: List[Dict[str, Any]]) -> schemas.BulkUploadResponse:
         """
         Memvalidasi dan menyimpan baris data jawaban siswa dari file.
         Termasuk logika untuk mencocokkan teks jawaban dengan ID opsi.
@@ -157,14 +161,15 @@ class BulkUploadService:
                         matched_option = next((opt for opt in question.answer_options if opt.option_text.strip() == answer_text), None)
                         if matched_option:
                             response_payload['selected_option_id'] = matched_option.id
-                else:
+                elif question.question_type == 'short_answer':
                     response_payload['response_text'] = answer_text
-
-                is_correct_input = row.get('is_correct (opsional, untuk esai)', '').lower()
-                if is_correct_input in ['true', '1', 't', 'y']:
-                    response_payload['is_response_correct'] = True
-                elif is_correct_input in ['false', '0', 'f', 'n']:
-                    response_payload['is_response_correct'] = False
+                    if question.correct_answer_text:
+                        if answer_text.lower() == question.correct_answer_text.lower():
+                            response_payload['is_response_correct'] = True
+                        else:
+                            response_payload['is_response_correct'] = False
+                else: # Essay
+                    response_payload['response_text'] = answer_text
                 
                 validated_data = schemas.StudentResponseCreate(**response_payload)
                 validated_responses.append(validated_data)

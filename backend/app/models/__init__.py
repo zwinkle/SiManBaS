@@ -10,6 +10,7 @@ from .comment import Comment
 from .student_response import StudentResponse
 from .test_session import TestSession
 from .item_analysis_result import ItemAnalysisResult
+from .roster import Roster, Student
 
 # Anda bisa mendefinisikan __all__ jika ingin mengontrol apa yang diimpor dengan 'from app.models import *'
 # __all__ = ["User", "Question", "AnswerOption", "StudentResponse", "ItemAnalysisResult"]

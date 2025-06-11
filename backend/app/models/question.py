@@ -1,6 +1,6 @@
 # backend/app/models/question.py
 import uuid
-from sqlalchemy import Column, String, Text, DateTime, func, ForeignKey, ARRAY
+from sqlalchemy import Column, String, Text, DateTime, func, ForeignKey, ARRAY, Table
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import relationship
 from app.db.base import Base
@@ -18,6 +18,7 @@ class Question(Base):
     topic = Column(String(100), nullable=True, index=True)
     initial_difficulty_estimate = Column(String(20), nullable=True) # contoh: 'easy', 'medium', 'hard'
     tags = Column(ARRAY(String), nullable=True)
+    correct_answer_text = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 

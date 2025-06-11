@@ -11,6 +11,7 @@ from .item_analysis_result import ItemAnalysisResultRead, ItemAnalysisResultBase
 from .statistics import OptionStatData, QuestionOptionStatsRead, AdminDashboardStats, TeacherDashboardStats, ItemAnalysisResultReadForStats, StudentScoresInput
 from .test_session import TestSessionBase, TestSessionCreate, TestSessionRead, TestSessionUpdate, QuestionIDList
 from .bulk_upload import BulkUploadResponse, UploadErrorDetail
+from .roster import StudentBase, StudentCreate, StudentRead, RosterBase, RosterCreate, RosterRead, RosterUpdate
 
 # Anda bisa menambahkan __all__ jika ingin mengontrol apa yang diimpor dengan 'from app.schemas import *'
 # __all__ = [

@@ -15,7 +15,30 @@ from app.services.template_service import template_service
 router = APIRouter()
 
 @router.post("/", response_model=schemas.TestSessionRead, status_code=status.HTTP_201_CREATED)
-def create_test_session(session_in: schemas.TestSessionCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
+def create_test_session(
+    session_in: schemas.TestSessionCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
+    """
+    Membuat sesi ujian baru.
+    Secara opsional bisa langsung ditautkan dengan sebuah kelas (roster)
+    jika roster_id diberikan saat pembuatan.
+    """
+    if session_in.roster_id:
+        db_roster = crud.roster.get(db, id=session_in.roster_id)
+        if not db_roster:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Kelas (Roster) dengan ID {session_in.roster_id} tidak ditemukan."
+            )
+        if db_roster.owner_id != current_user.id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Anda tidak memiliki izin untuk menggunakan kelas ini."
+            )
+    
+    # Panggil fungsi CRUD untuk membuat sesi dan menyimpannya ke database
     return crud.test_session.create_with_owner(db=db, obj_in=session_in, owner_id=current_user.id)
 
 @router.get("/", response_model=List[schemas.TestSessionRead])

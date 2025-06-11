@@ -3,7 +3,7 @@ from pydantic import BaseModel, ConfigDict
 from typing import Optional, List
 from uuid import UUID
 from datetime import datetime
-from .answer_option import AnswerOptionUpdate, AnswerOptionRead, AnswerOptionInput # Impor skema AnswerOption
+from .answer_option import AnswerOptionUpdate, AnswerOptionRead, AnswerOptionInput
 from .user import UserRead
 
 class QuestionBase(BaseModel):

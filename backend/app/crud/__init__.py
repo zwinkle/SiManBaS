@@ -7,3 +7,4 @@ from .crud_student_response import student_response
 from .crud_item_analysis_result import item_analysis_result
 from .crud_test_session import test_session
 from .crud_meta import meta
+from .crud_roster import roster
