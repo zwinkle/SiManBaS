@@ -16,6 +16,7 @@ class QuestionBase(BaseModel):
     topic: Optional[str] = None
     initial_difficulty_estimate: Optional[str] = None # contoh: 'easy', 'medium', 'hard'
     tags: Optional[List[str]] = None
+    correct_answer_text: Optional[str] = None
 
 class QuestionCreate(QuestionBase):
     """
