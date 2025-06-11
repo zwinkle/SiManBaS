@@ -1,11 +1,14 @@
 // src/pages/TestSessionListPage.jsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { List, Button, message, Skeleton, Modal, Form, Input, App, Space, Popconfirm, Alert } from 'antd'; // Impor Space & Popconfirm
-import { PlusOutlined, DownloadOutlined, EditOutlined, DeleteOutlined, InfoCircleOutlined  } from '@ant-design/icons'; // Impor ikon baru
+import { List, Button, message, Skeleton, Modal, Form, Input, App, Space, Popconfirm, Alert, Select } from 'antd';
+import { PlusOutlined, DownloadOutlined, EditOutlined, DeleteOutlined, InfoCircleOutlined  } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import PageTitle from '../components/common/PageTitle';
 import testSessionService from '../api/testSessionService';
 import { getApiErrorMessage } from '../utils/errors';
+import rosterService from '../api/rosterService';
+
+const { Option } = Select;
 
 const TestSessionListPage = () => {
     const [sessions, setSessions] = useState([]);
@@ -17,6 +20,21 @@ const TestSessionListPage = () => {
     const [editForm] = Form.useForm();
     const navigate = useNavigate();
     const { message: messageApi } = App.useApp();
+    const [rosters, setRosters] = useState([]);
+
+    useEffect(() => {
+        if (isCreateModalOpen || isEditModalOpen) {
+            const fetchRostersForSelect = async () => {
+                try {
+                    const data = await rosterService.getRosters();
+                    setRosters(data);
+                } catch (error) {
+                    messageApi.error("Gagal memuat daftar kelas untuk pilihan.");
+                }
+            };
+            fetchRostersForSelect();
+        }
+    }, [isCreateModalOpen, isEditModalOpen, messageApi]);
 
     const fetchSessions = useCallback(async () => {
         setLoading(true);
@@ -48,7 +66,7 @@ const TestSessionListPage = () => {
 
     const showEditModal = (session) => {
         setEditingSession(session);
-        editForm.setFieldsValue({ name: session.name, description: session.description });
+        editForm.setFieldsValue({ name: session.name, description: session.description, roster_id: session.roster_id });
         setIsEditModalOpen(true);
     };
 
@@ -128,11 +146,16 @@ const TestSessionListPage = () => {
 
             <Modal title="Buat Sesi Ujian Baru" open={isCreateModalOpen} onCancel={() => setIsModalOpen(false)} onOk={() => form.submit()} okText="Buat">
                 <Form form={createForm} layout="vertical" onFinish={handleCreateSession}>
-                    <Form.Item name="name" label="Nama Sesi Ujian" rules={[{ required: true, message: 'Nama sesi tidak boleh kosong' }]}>
+                    <Form.Item name="name" label="Nama Sesi Ujian" rules={[{ required: true }]}>
                         <Input placeholder="Contoh: UTS Ganjil 2025 - Matematika" />
                     </Form.Item>
                     <Form.Item name="description" label="Deskripsi">
                         <Input.TextArea />
+                    </Form.Item>
+                    <Form.Item name="roster_id" label="Terapkan untuk Kelas (Opsional)">
+                        <Select placeholder="Tidak ditautkan ke kelas mana pun" allowClear>
+                            {rosters.map(r => <Option key={r.id} value={r.id}>{r.name}</Option>)}
+                        </Select>
                     </Form.Item>
                 </Form>
             </Modal>
@@ -144,6 +167,11 @@ const TestSessionListPage = () => {
                     </Form.Item>
                     <Form.Item name="description" label="Deskripsi">
                         <Input.TextArea />
+                    </Form.Item>
+                    <Form.Item name="roster_id" label="Terapkan untuk Kelas (Opsional)">
+                        <Select placeholder="Tidak ditautkan ke kelas mana pun" allowClear>
+                            {rosters.map(r => <Option key={r.id} value={r.id}>{r.name}</Option>)}
+                        </Select>
                     </Form.Item>
                 </Form>
             </Modal>

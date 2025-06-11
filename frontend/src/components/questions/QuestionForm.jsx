@@ -1,33 +1,44 @@
 // src/components/questions/QuestionForm.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Form, Input, Button, Select, Space, Checkbox } from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
+/**
+ * Komponen form yang dapat digunakan kembali untuk membuat dan mengedit soal.
+ * @param {object} props
+ * @param {function} props.onSubmit - Fungsi yang dipanggil saat form disubmit.
+ * @param {object} [props.initialValues] - Nilai awal untuk mengisi form (mode edit).
+ * @param {boolean} [props.loading=false] - Status loading untuk tombol submit.
+ * @param {string} [props.submitButtonText="Simpan"] - Teks untuk tombol submit.
+ */
 const QuestionForm = ({ onSubmit, initialValues, loading = false, submitButtonText = "Simpan" }) => {
   const [form] = Form.useForm();
-  // State untuk melacak tipe soal yang dipilih
-  const [questionType, setQuestionType] = useState(initialValues?.question_type || null);
 
+  // Gunakan Form.useWatch untuk memantau perubahan pada field 'question_type'
+  // Ini adalah cara modern dan efisien untuk rendering kondisional di AntD Form.
+  const questionType = Form.useWatch('question_type', form);
+
+  // Gunakan useEffect untuk mengisi form saat initialValues tersedia (mode edit)
   useEffect(() => {
-    // Set nilai form jika initialValues berubah (untuk mode edit)
-    form.setFieldsValue(initialValues);
-    setQuestionType(initialValues?.question_type);
+    if (initialValues) {
+      form.setFieldsValue(initialValues);
+    } else {
+      form.resetFields();
+    }
   }, [initialValues, form]);
 
   const onFinish = (values) => {
-    // Memastikan answer_options hanya dikirim jika tipe soal adalah multiple_choice
+    // Pastikan answer_options hanya dikirim jika tipe soal adalah multiple_choice
+    // dan correct_answer_text hanya dikirim jika tipe soal adalah short_answer.
     const finalValues = {
-      ...values,
-      answer_options: questionType === 'multiple_choice' ? values.answer_options : [],
+        ...values,
+        answer_options: values.question_type === 'multiple_choice' ? values.answer_options || [] : [],
+        correct_answer_text: values.question_type === 'short_answer' ? values.correct_answer_text : null,
     };
     onSubmit(finalValues);
-  };
-
-  const handleQuestionTypeChange = (value) => {
-    setQuestionType(value);
   };
 
   return (
@@ -36,6 +47,7 @@ const QuestionForm = ({ onSubmit, initialValues, loading = false, submitButtonTe
       layout="vertical"
       onFinish={onFinish}
       initialValues={initialValues}
+      name="question_form"
     >
       <Form.Item
         name="subject"
@@ -50,7 +62,7 @@ const QuestionForm = ({ onSubmit, initialValues, loading = false, submitButtonTe
         label="Topik"
         rules={[{ required: true, message: 'Silakan masukkan topik soal!' }]}
       >
-        <Input placeholder="Contoh: Aljabar" />
+        <Input placeholder="Contoh: Aljabar Dasar" />
       </Form.Item>
 
       <Form.Item
@@ -66,14 +78,26 @@ const QuestionForm = ({ onSubmit, initialValues, loading = false, submitButtonTe
         label="Tipe Soal"
         rules={[{ required: true, message: 'Silakan pilih tipe soal!' }]}
       >
-        <Select placeholder="Pilih tipe soal" onChange={handleQuestionTypeChange}>
+        <Select placeholder="Pilih tipe soal">
           <Option value="multiple_choice">Pilihan Ganda</Option>
-          <Option value="essay">Esai</Option>
           <Option value="short_answer">Jawaban Singkat</Option>
+          <Option value="essay">Esai</Option>
         </Select>
       </Form.Item>
 
-      {/* Tampilkan field untuk pilihan jawaban HANYA jika tipe soal adalah Pilihan Ganda */}
+      {/* Tampilkan input Kunci Jawaban HANYA jika tipe soal adalah Jawaban Singkat */}
+      {questionType === 'short_answer' && (
+        <Form.Item
+            name="correct_answer_text"
+            label="Kunci Jawaban Teks"
+            rules={[{ required: true, message: 'Kunci jawaban harus diisi untuk tipe soal ini!' }]}
+            help="Sistem akan mencocokkan jawaban siswa dengan teks ini (tidak peka huruf besar/kecil)."
+        >
+            <Input placeholder="Masukkan jawaban teks yang dianggap benar" />
+        </Form.Item>
+      )}
+
+      {/* Tampilkan field Pilihan Jawaban HANYA jika tipe soal adalah Pilihan Ganda */}
       {questionType === 'multiple_choice' && (
         <Form.List
           name="answer_options"
@@ -87,10 +111,6 @@ const QuestionForm = ({ onSubmit, initialValues, loading = false, submitButtonTe
                 if (correctAnswers.length === 0) {
                   return Promise.reject(new Error('Harus ada minimal 1 jawaban yang benar.'));
                 }
-                // Jika ingin hanya satu jawaban benar, tambahkan validasi ini:
-                // if (correctAnswers.length > 1) {
-                //   return Promise.reject(new Error('Hanya boleh ada 1 jawaban yang benar.'));
-                // }
               },
             },
           ]}
@@ -103,8 +123,8 @@ const QuestionForm = ({ onSubmit, initialValues, loading = false, submitButtonTe
                     {...restField}
                     name={[name, 'option_text']}
                     validateTrigger={['onChange', 'onBlur']}
-                    rules={[{ required: true, message: 'Pilihan jawaban tidak boleh kosong.' }]}
-                    style={{ width: '400px' }}
+                    rules={[{ required: true, whitespace: true, message: 'Pilihan jawaban tidak boleh kosong.' }]}
+                    style={{ flexGrow: 1 }}
                   >
                     <Input placeholder={`Pilihan ${index + 1}`} />
                   </Form.Item>
@@ -112,14 +132,15 @@ const QuestionForm = ({ onSubmit, initialValues, loading = false, submitButtonTe
                     {...restField}
                     name={[name, 'is_correct']}
                     valuePropName="checked"
+                    noStyle
                   >
                     <Checkbox>Benar?</Checkbox>
                   </Form.Item>
-                  <MinusCircleOutlined onClick={() => remove(name)} />
+                  <MinusCircleOutlined className="dynamic-delete-button" onClick={() => remove(name)} />
                 </Space>
               ))}
               <Form.Item>
-                <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                <Button type="dashed" onClick={() => add({ option_text: '', is_correct: false })} block icon={<PlusOutlined />}>
                   Tambah Pilihan Jawaban
                 </Button>
                 <Form.ErrorList errors={errors} />
@@ -129,7 +150,7 @@ const QuestionForm = ({ onSubmit, initialValues, loading = false, submitButtonTe
         </Form.List>
       )}
 
-      <Form.Item>
+      <Form.Item style={{ marginTop: 24 }}>
         <Button type="primary" htmlType="submit" loading={loading}>
           {submitButtonText}
         </Button>
